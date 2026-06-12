@@ -57,7 +57,7 @@ export default async function HomePage({
         alternateDate={latest.date}
       />
 
-      <div className="pt-[var(--nav-height)]">
+      <div className="pt-[var(--nav-height)] lg:pt-0">
         <DocsShell
           sidebar={
             <ArchiveSidebar

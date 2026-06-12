@@ -52,6 +52,10 @@ export function ArchiveSidebar({
     });
   }, [activeDate, groups]);
 
+  useEffect(() => {
+    ref.current?.scrollTo({ top: 0 });
+  }, [activeDate]);
+
   function toggleMonth(label: string) {
     setCollapsed((prev) => {
       const next = new Set(prev);

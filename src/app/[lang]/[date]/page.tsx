@@ -75,7 +75,7 @@ export default async function ReportPage({
     <>
       <Header lang={lang} activeTab="read" alternateDate={date} />
 
-      <div className="pt-[var(--nav-height)]">
+      <div className="pt-[var(--nav-height)] lg:pt-0">
         <DocsShell
           sidebar={
             <ArchiveSidebar

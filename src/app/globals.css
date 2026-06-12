@@ -19,7 +19,7 @@
   --gray-800: 37 37 37;
   --gray-900: 23 23 23;
   --nav-height: 7rem;
-  --sidebar-top: 7.1rem;
+  --sidebar-top: var(--nav-height);
   --scroll-mt: 9.5rem;
 }
 
@@ -112,8 +112,10 @@ body {
 
 .sidebar-fade-top {
   pointer-events: none;
-  position: sticky;
+  position: absolute;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 10;
   height: 2rem;
   background: linear-gradient(
@@ -241,15 +243,11 @@ body {
 
 .toc-link.is-active {
   color: rgb(var(--primary));
-  border-left: 1px solid rgb(var(--primary));
-  padding-left: 0.75rem;
-  margin-left: -0.75rem;
   text-shadow: -0.15px 0 0 currentColor, 0.15px 0 0 currentColor;
 }
 
 .dark .toc-link.is-active {
   color: rgb(var(--primary-light));
-  border-left-color: rgb(var(--primary-light));
 }
 
 .prose-bp {

@@ -18,7 +18,7 @@ export function PageHeader({
       id="header"
       className="relative leading-none @container/page-header"
     >
-      <div className="mt-0.5 space-y-2.5">
+      <div className="space-y-2.5">
         <div className="eyebrow h-5 text-sm font-semibold text-primary dark:text-primary-light">
           {eyebrow}
         </div>
