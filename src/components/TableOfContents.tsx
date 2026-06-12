@@ -1,6 +1,8 @@
 "use client";
 
+import { List } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
+import { useScrollingFlash } from "@/hooks/use-scrolling-flash";
 import type { TocItem } from "@/lib/types";
 
 interface TableOfContentsProps {
@@ -9,6 +11,7 @@ interface TableOfContentsProps {
 }
 
 export function TableOfContents({ items, title }: TableOfContentsProps) {
+  const { ref, isScrolling } = useScrollingFlash<HTMLDivElement>();
   const [activeId, setActiveId] = useState<string>("");
 
   useEffect(() => {
@@ -27,7 +30,7 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
           setActiveId(visible[0].target.id);
         }
       },
-      { rootMargin: "-88px 0px -70% 0px", threshold: 0 },
+      { rootMargin: "-152px 0px -70% 0px", threshold: 0 },
     );
 
     headings.forEach((h) => observer.observe(h));
@@ -37,33 +40,46 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
   if (items.length === 0) return null;
 
   return (
-    <nav className="sticky top-[calc(var(--nav-height)+1.5rem)] max-h-[calc(100dvh-var(--nav-height)-2rem)] overflow-y-auto">
-      <h2 className="border-b border-border pb-3 text-sm font-semibold text-foreground">
-        {title}
-      </h2>
-      <ul className="mt-4 space-y-1 border-l border-border pl-3">
-        {items.map((item) => (
-          <li key={item.id} className={item.level === 3 ? "pl-2" : ""}>
-            <a
-              href={`#${item.id}`}
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById(item.id)?.scrollIntoView({
-                  behavior: "smooth",
-                  block: "start",
-                });
-              }}
-              className={`block py-0.5 leading-snug transition ${
-                activeId === item.id
-                  ? "font-medium text-accent"
-                  : "text-text-muted hover:text-foreground"
-              } ${item.level === 3 ? "text-xs" : "text-sm"}`}
-            >
-              {item.text}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <div
+      className="fixed right-8 top-[var(--sidebar-top)] z-20 hidden w-[16.5rem] xl:block"
+      id="table-of-contents"
+    >
+      <div
+        ref={ref}
+        className={`sidebar-scroll -mt-10 max-h-[calc(100dvh-var(--sidebar-top)-2rem)] space-y-2 overflow-y-auto pb-4 pt-10 text-sm leading-6 text-gray-600 dark:text-gray-400${isScrolling ? " is-scrolling" : ""}`}
+      >
+        <nav aria-label={title}>
+          <h2 className="m-0 font-normal">
+            <span className="flex items-center space-x-2 font-medium text-gray-700 dark:text-gray-300">
+              <List size={12} weight="bold" aria-hidden />
+              <span>{title}</span>
+            </span>
+          </h2>
+          <ul className="toc mt-3 space-y-0.5">
+            {items.map((item) => (
+              <li
+                key={item.id}
+                className={item.level === 3 ? "pl-3" : ""}
+              >
+                <a
+                  href={`#${item.id}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById(item.id)?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                    });
+                  }}
+                  className={`toc-link ${activeId === item.id ? "is-active" : ""} ${item.level === 3 ? "text-xs" : ""}`}
+                  aria-current={activeId === item.id ? "location" : undefined}
+                >
+                  {item.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </div>
   );
 }

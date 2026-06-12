@@ -1,17 +1,11 @@
 import type { Metadata } from "next";
-import { Outfit, Newsreader, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
-const outfit = Outfit({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-outfit",
-  display: "swap",
-});
-
-const newsreader = Newsreader({
-  subsets: ["latin"],
-  variable: "--font-newsreader",
+  variable: "--font-inter",
   display: "swap",
 });
 
@@ -26,7 +20,10 @@ export const metadata: Metadata = {
   description:
     "Daily opportunity brief for indie hackers. One build idea. One reason it matters now.",
   icons: {
-    icon: [{ url: "/logo.svg", type: "image/svg+xml" }, { url: "/favicon.ico", sizes: "any" }],
+    icon: [
+      { url: "/logo.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
     apple: "/apple-icon.png",
   },
 };
@@ -39,16 +36,16 @@ export default function RootLayout({
   return (
     <html
       lang="zh"
-      className={`${outfit.variable} ${newsreader.variable} ${jetbrainsMono.variable} h-full`}
+      className={`${inter.variable} ${jetbrainsMono.variable} h-full light`}
       suppressHydrationWarning
     >
       <head>
         <Script id="theme-init" strategy="beforeInteractive">
-          {`(function(){try{var t=localStorage.getItem('theme');var d=t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.classList.toggle('dark',d)}catch(e){}})()`}
+          {`(function(){try{var t=localStorage.getItem('theme');var d=t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.classList.toggle('dark',d);document.documentElement.classList.toggle('light',!d)}catch(e){}})()`}
         </Script>
       </head>
       <body
-        className="min-h-full flex flex-col font-sans antialiased"
+        className="min-h-full flex flex-col bg-background font-sans text-base antialiased"
         suppressHydrationWarning
       >
         {children}

@@ -3,6 +3,7 @@
 import { CaretDown, CaretRight } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useScrollingFlash } from "@/hooks/use-scrolling-flash";
 import { formatShortDate } from "@/lib/format";
 import type { Lang, ReportMeta } from "@/lib/types";
 
@@ -26,6 +27,7 @@ export function ArchiveSidebar({
   title,
   totalCount,
 }: ArchiveSidebarProps) {
+  const { ref, isScrolling } = useScrollingFlash<HTMLDivElement>();
   const [collapsed, setCollapsed] = useState<Set<string>>(() => {
     const activeGroup = groups.find((g) =>
       g.reports.some((r) => r.date === activeDate),
@@ -65,61 +67,74 @@ export function ArchiveSidebar({
   }
 
   return (
-    <aside className="sticky top-[calc(var(--nav-height)+1.5rem)] hidden max-h-[calc(100dvh-var(--nav-height)-2rem)] overflow-y-auto lg:block">
-      <div className="border-b border-border pb-3">
-        <h2 className="text-sm font-semibold text-foreground">{title}</h2>
-        <p className="mt-1 font-mono text-xs text-text-muted">
-          {totalCount} {lang === "zh" ? "篇" : "issues"}
-        </p>
+    <nav
+      aria-label={title}
+      className="fixed bottom-0 right-auto z-20 hidden w-[18rem] lg:block"
+      style={{ top: "var(--sidebar-top)" }}
+    >
+      <div
+        ref={ref}
+        className={`sidebar-scroll absolute inset-0 overflow-auto pb-10 pr-8${isScrolling ? " is-scrolling" : ""}`}
+      >
+        <div className="relative text-sm leading-6">
+          <div className="sidebar-fade-top" />
+          <div className="mb-4 pl-4">
+            <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-200">
+              {title}
+            </h2>
+            <p className="mt-1 font-mono text-xs text-gray-500 dark:text-gray-400">
+              {totalCount} {lang === "zh" ? "篇" : "issues"}
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {groups.map((group) => {
+              const isOpen = !collapsed.has(group.label);
+              return (
+                <div key={group.label}>
+                  <button
+                    type="button"
+                    onClick={() => toggleMonth(group.label)}
+                    className="mb-2 flex w-full items-center gap-1.5 rounded-md py-1 pl-4 text-left text-[11px] font-semibold text-gray-900 transition hover:text-gray-700 dark:text-gray-200 dark:hover:text-gray-300"
+                    aria-expanded={isOpen}
+                  >
+                    {isOpen ? (
+                      <CaretDown size={12} weight="bold" className="shrink-0" />
+                    ) : (
+                      <CaretRight size={12} weight="bold" className="shrink-0" />
+                    )}
+                    <span className="flex-1">{group.label}</span>
+                    <span className="pr-2 text-[10px] font-normal text-gray-400">
+                      {group.reports.length}
+                    </span>
+                  </button>
+
+                  {isOpen && (
+                    <ul className="space-y-px">
+                      {group.reports.map((report) => {
+                        const isActive = report.date === activeDate;
+                        return (
+                          <li key={report.date}>
+                            <Link
+                              href={`/${lang}/${report.date}`}
+                              className={`sidebar-link ${isActive ? "is-active" : ""}`}
+                              aria-current={isActive ? "page" : undefined}
+                            >
+                              <time className="font-mono text-xs">
+                                {formatShortDate(report.date, lang)}
+                              </time>
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
-
-      <nav className="mt-4 space-y-4">
-        {groups.map((group) => {
-          const isOpen = !collapsed.has(group.label);
-          return (
-            <div key={group.label}>
-              <button
-                type="button"
-                onClick={() => toggleMonth(group.label)}
-                className="mb-1 flex w-full items-center gap-1.5 rounded-md py-1 text-left font-mono text-[11px] text-text-muted transition hover:bg-surface hover:text-foreground"
-                aria-expanded={isOpen}
-              >
-                {isOpen ? (
-                  <CaretDown size={12} weight="bold" className="shrink-0" />
-                ) : (
-                  <CaretRight size={12} weight="bold" className="shrink-0" />
-                )}
-                <span className="flex-1">{group.label}</span>
-                <span className="text-[10px] opacity-60">
-                  {group.reports.length}
-                </span>
-              </button>
-
-              {isOpen && (
-                <ul className="space-y-px border-l border-border">
-                  {group.reports.map((report) => {
-                    const isActive = report.date === activeDate;
-                    return (
-                      <li key={report.date}>
-                        <Link
-                          href={`/${lang}/${report.date}`}
-                          className={`relative block border-l-2 py-1.5 pl-3 pr-1 font-mono text-xs transition ${
-                            isActive
-                              ? "-ml-px border-l-accent bg-accent-subtle font-medium text-accent"
-                              : "border-l-transparent text-text-muted hover:border-l-border hover:bg-surface hover:text-foreground"
-                          }`}
-                        >
-                          <time>{formatShortDate(report.date, lang)}</time>
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </div>
-          );
-        })}
-      </nav>
-    </aside>
+    </nav>
   );
 }

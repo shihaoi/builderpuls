@@ -21,6 +21,14 @@ export const UI: Record<
     langSwitch: string;
     reports: string;
     whyNow: string;
+    tabRead: string;
+    tabArchive: string;
+    tabSource: string;
+    searchPlaceholder: string;
+    upstreamRepo: string;
+    ctaAuthor: string;
+    copyPage: string;
+    onThisPage: string;
   }
 > = {
   en: {
@@ -43,6 +51,14 @@ export const UI: Record<
     langSwitch: "中文",
     reports: "reports",
     whyNow: "Why now",
+    tabRead: "Daily Brief",
+    tabArchive: "Archive",
+    tabSource: "Source",
+    searchPlaceholder: "Search...",
+    upstreamRepo: "BuilderPulse Repo",
+    ctaAuthor: "Liu Xiaopai",
+    copyPage: "Copy page",
+    onThisPage: "On this page",
   },
   zh: {
     siteName: "BuilderPulse",
@@ -64,6 +80,14 @@ export const UI: Record<
     langSwitch: "English",
     reports: "篇报告",
     whyNow: "为什么是现在",
+    tabRead: "每日简报",
+    tabArchive: "归档",
+    tabSource: "来源",
+    searchPlaceholder: "搜索...",
+    upstreamRepo: "上游仓库",
+    ctaAuthor: "刘小排",
+    copyPage: "复制页面",
+    onThisPage: "在此页面",
   },
 };
 

@@ -12,13 +12,13 @@ export function Footer({ lang, syncedAt }: FooterProps) {
   const syncedLabel = syncedAt ? formatSyncedAt(syncedAt, lang) : "-";
 
   return (
-    <footer className="mt-auto border-t border-border bg-surface">
-      <div className="mx-auto flex max-w-[1440px] flex-col gap-3 px-4 py-8 text-sm text-text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <footer className="mx-auto mt-auto w-full max-w-[96rem] border-t border-gray-100 px-4 py-10 dark:border-gray-800/50 sm:px-6 lg:px-12">
+      <div className="flex flex-col gap-3 text-sm text-gray-500 dark:text-gray-400 sm:flex-row sm:items-center sm:justify-between">
         <p>
           {t.source}:{" "}
           <a
             href="https://github.com/BuilderPulse/BuilderPulse"
-            className="text-text-secondary underline decoration-border underline-offset-2 transition hover:text-accent"
+            className="text-gray-700 underline decoration-gray-300 underline-offset-2 transition hover:text-gray-900 dark:text-gray-300 dark:decoration-gray-600 dark:hover:text-gray-100"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -27,7 +27,7 @@ export function Footer({ lang, syncedAt }: FooterProps) {
           {" · "}
           <a
             href="https://github.com/liuxiaopai-ai"
-            className="text-text-secondary underline decoration-border underline-offset-2 transition hover:text-accent"
+            className="text-gray-700 underline decoration-gray-300 underline-offset-2 transition hover:text-gray-900 dark:text-gray-300 dark:decoration-gray-600 dark:hover:text-gray-100"
             target="_blank"
             rel="noopener noreferrer"
           >
