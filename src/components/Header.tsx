@@ -1,4 +1,5 @@
-import { GithubLogo, Pulse } from "@phosphor-icons/react/dist/ssr";
+import { GithubLogo } from "@phosphor-icons/react/dist/ssr";
+import Image from "next/image";
 import Link from "next/link";
 import type { Lang } from "@/lib/types";
 import { UI, otherLang } from "@/lib/i18n";
@@ -21,9 +22,14 @@ export function Header({ lang, alternateDate }: HeaderProps) {
           href={`/${lang}`}
           className="group flex min-w-0 items-center gap-3"
         >
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent text-white transition group-hover:bg-accent-hover">
-            <Pulse size={20} weight="bold" />
-          </span>
+          <Image
+            src="/logo.svg"
+            alt=""
+            width={36}
+            height={36}
+            className="h-9 w-9 shrink-0 rounded-lg transition group-hover:brightness-110"
+            priority
+          />
           <div className="min-w-0 leading-tight">
             <span className="block truncate font-semibold tracking-tight text-foreground">
               {t.siteName}

@@ -25,6 +25,10 @@ export const metadata: Metadata = {
   title: "BuilderPulse",
   description:
     "Daily opportunity brief for indie hackers. One build idea. One reason it matters now.",
+  icons: {
+    icon: [{ url: "/logo.svg", type: "image/svg+xml" }, { url: "/favicon.ico", sizes: "any" }],
+    apple: "/apple-icon.png",
+  },
 };
 
 export default function RootLayout({
