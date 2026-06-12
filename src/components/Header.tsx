@@ -1,4 +1,4 @@
-import { GithubLogo, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, ChatsCircle, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
 import Image from "next/image";
 import Link from "next/link";
 import type { Lang } from "@/lib/types";
@@ -40,7 +40,7 @@ export function Header({
       className="peer fixed top-0 z-30 w-full lg:sticky"
       style={{ ["--nav-height" as string]: "7rem" }}
     >
-      <div className="absolute h-full w-full flex-none border-b border-gray-500/5 backdrop-blur transition-colors duration-500 supports-backdrop-blur:bg-background/60 dark:border-gray-300/[0.06] dark:supports-backdrop-blur:bg-[rgb(9,9,11)]/75" />
+      <div className="absolute h-full w-full flex-none border-b border-gray-500/5 backdrop-blur transition-colors duration-500 supports-backdrop-blur:bg-[rgb(253,253,247)]/95 dark:border-gray-300/[0.06] dark:supports-backdrop-blur:bg-[rgb(9,9,11)]/75" />
 
       <div className="relative mx-auto max-w-[96rem]">
         <div className="relative mx-4 flex h-16 min-w-0 items-center gap-x-4 border-b border-gray-500/5 dark:border-gray-300/[0.06] lg:mx-0 lg:px-12">
@@ -59,32 +59,38 @@ export function Header({
               </span>
             </Link>
 
-            <button
-              type="button"
-              className="hidden items-center gap-2 rounded-xl border-0 bg-transparent px-2 py-1 text-sm text-gray-500 transition hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 md:inline-flex"
-              aria-label={t.langSwitch}
+            <Link
+              href={altHref}
+              className="hidden items-center gap-1 rounded-xl px-2 py-1 text-sm text-gray-500 transition hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 md:inline-flex"
             >
               <span>{lang === "zh" ? "简体中文" : "English"}</span>
-              <span className="text-xs opacity-60">▾</span>
-            </button>
+              <span className="text-[10px] opacity-60">▾</span>
+            </Link>
           </div>
 
-          <div className="hidden max-w-sm flex-1 lg:flex">
-            <div className="pointer-events-none flex h-9 w-full items-center rounded-xl border border-gray-200/80 bg-background px-3.5 text-sm text-gray-500 dark:border-white/[0.08] dark:bg-background dark:text-gray-400">
-              <MagnifyingGlass size={16} className="mr-2 shrink-0 opacity-70" />
-              <span>{t.searchPlaceholder}</span>
-              <span className="ml-auto rounded-md border border-gray-200/80 px-1.5 py-0.5 font-mono text-[10px] text-gray-400 dark:border-white/10">
+          <div className="hidden max-w-md flex-1 justify-center lg:flex">
+            <div className="pointer-events-none flex h-9 w-full max-w-sm items-center rounded-xl border border-gray-200 bg-white px-3.5 text-sm text-gray-500 shadow-sm dark:border-white/[0.08] dark:bg-zinc-900 dark:text-gray-400">
+              <MagnifyingGlass size={16} className="mr-2 shrink-0 opacity-60" />
+              <span className="flex-1 text-left">{t.searchPlaceholder}</span>
+              <span className="rounded-md border border-gray-200 px-1.5 py-0.5 font-mono text-[10px] text-gray-400 dark:border-white/10">
                 ⌘K
               </span>
             </div>
           </div>
 
           <nav className="flex shrink-0 items-center gap-1 sm:gap-2">
+            <button
+              type="button"
+              className="hidden h-9 items-center gap-1.5 rounded-xl bg-gray-600/5 px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-600/10 dark:bg-gray-200/5 dark:text-gray-300 dark:hover:bg-gray-200/10 lg:inline-flex"
+            >
+              <ChatsCircle size={16} />
+              {t.askAssistant}
+            </button>
             <a
               href="https://github.com/BuilderPulse/BuilderPulse"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden items-center gap-1.5 whitespace-nowrap px-2 text-sm font-medium text-gray-600 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 sm:inline-flex"
+              className="hidden items-center gap-1.5 whitespace-nowrap px-2 text-sm font-medium text-gray-600 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 lg:inline-flex"
             >
               {t.upstreamRepo}
             </a>
@@ -92,23 +98,15 @@ export function Header({
               href="https://github.com/liuxiaopai-ai"
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative hidden items-center rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-background transition hover:opacity-90 dark:bg-gray-100 dark:text-gray-900 lg:inline-flex"
+              className="group relative hidden items-center gap-1 rounded-full bg-[rgb(14,14,14)] px-4 py-1.5 text-sm font-medium text-[rgb(253,253,247)] transition hover:opacity-90 dark:bg-gray-100 dark:text-gray-900 lg:inline-flex"
             >
               {t.ctaAuthor}
-            </a>
-            <a
-              href="https://github.com/BuilderPulse/BuilderPulse"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-gray-600 transition hover:bg-gray-600/5 dark:text-gray-400 dark:hover:bg-gray-200/5"
-              aria-label="GitHub"
-            >
-              <GithubLogo size={20} weight="duotone" />
+              <ArrowRight size={14} weight="bold" />
             </a>
             <ThemeToggle />
             <Link
               href={altHref}
-              className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-600/5 dark:border-white/[0.07] dark:text-gray-300 dark:hover:bg-gray-200/5"
+              className="rounded-lg px-2 py-1.5 text-sm font-medium text-gray-600 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 lg:hidden"
             >
               {t.langSwitch}
             </Link>

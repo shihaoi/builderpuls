@@ -83,7 +83,6 @@ export default async function ReportPage({
               lang={lang}
               activeDate={date}
               title={t.archive}
-              totalCount={reports.length}
             />
           }
           toc={<TableOfContents items={toc} title={t.onThisPage} />}

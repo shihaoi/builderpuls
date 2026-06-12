@@ -196,6 +196,17 @@ body {
   background: rgb(255 255 255 / 0.05);
 }
 
+.sidebar-group-header {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.sidebar-group {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 .sidebar-link.is-active {
   background: rgb(var(--primary) / 0.1);
   color: rgb(var(--primary));

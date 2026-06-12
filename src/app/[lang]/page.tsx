@@ -65,7 +65,6 @@ export default async function HomePage({
               lang={lang}
               activeDate={latest.date}
               title={t.archive}
-              totalCount={reports.length}
             />
           }
         >

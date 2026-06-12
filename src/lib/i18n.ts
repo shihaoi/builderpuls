@@ -27,8 +27,14 @@ export const UI: Record<
     searchPlaceholder: string;
     upstreamRepo: string;
     ctaAuthor: string;
+    askAssistant: string;
     copyPage: string;
     onThisPage: string;
+    footerSource: string;
+    footerReader: string;
+    footerAuthor: string;
+    footerMeta: string;
+    footerReaderRepo: string;
   }
 > = {
   en: {
@@ -57,8 +63,14 @@ export const UI: Record<
     searchPlaceholder: "Search...",
     upstreamRepo: "BuilderPulse Repo",
     ctaAuthor: "Liu Xiaopai",
+    askAssistant: "Ask assistant",
     copyPage: "Copy page",
     onThisPage: "On this page",
+    footerSource: "Source",
+    footerReader: "Reader",
+    footerAuthor: "Author",
+    footerMeta: "Meta",
+    footerReaderRepo: "Reader site",
   },
   zh: {
     siteName: "BuilderPulse",
@@ -86,8 +98,14 @@ export const UI: Record<
     searchPlaceholder: "搜索...",
     upstreamRepo: "上游仓库",
     ctaAuthor: "刘小排",
+    askAssistant: "询问助手",
     copyPage: "复制页面",
     onThisPage: "在此页面",
+    footerSource: "数据来源",
+    footerReader: "阅读",
+    footerAuthor: "作者",
+    footerMeta: "信息",
+    footerReaderRepo: "阅读站仓库",
   },
 };
 

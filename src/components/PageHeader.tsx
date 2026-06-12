@@ -14,17 +14,23 @@ export function PageHeader({
   showCopy = true,
 }: PageHeaderProps) {
   return (
-    <header className="relative leading-none">
+    <header
+      id="header"
+      className="relative leading-none @container/page-header"
+    >
       <div className="mt-0.5 space-y-2.5">
-        <div className="h-5 text-sm font-semibold text-primary dark:text-primary-light">
+        <div className="eyebrow h-5 text-sm font-semibold text-primary dark:text-primary-light">
           {eyebrow}
         </div>
         <div className="relative flex min-w-0 flex-col items-start gap-2 sm:flex-row sm:items-center">
-          <h1 className="break-all text-2xl font-bold tracking-tight text-gray-900 [overflow-wrap:anywhere] dark:text-gray-200 sm:text-3xl">
+          <h1
+            id="page-title"
+            className="break-all text-2xl font-bold tracking-tight text-gray-900 [overflow-wrap:anywhere] dark:text-gray-200 sm:text-3xl"
+          >
             {title}
           </h1>
           {showCopy && (
-            <div className="ml-auto hidden min-w-[156px] shrink-0 items-center justify-end sm:flex">
+            <div className="ml-auto hidden min-w-[156px] shrink-0 items-center justify-end @[600px]/page-header:flex">
               <CopyPageButton label={copyLabel} />
             </div>
           )}

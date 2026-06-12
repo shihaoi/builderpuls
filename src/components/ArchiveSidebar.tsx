@@ -17,7 +17,6 @@ interface ArchiveSidebarProps {
   lang: Lang;
   activeDate: string;
   title: string;
-  totalCount: number;
 }
 
 export function ArchiveSidebar({
@@ -25,7 +24,6 @@ export function ArchiveSidebar({
   lang,
   activeDate,
   title,
-  totalCount,
 }: ArchiveSidebarProps) {
   const { ref, isScrolling } = useScrollingFlash<HTMLDivElement>();
   const [collapsed, setCollapsed] = useState<Set<string>>(() => {
@@ -78,16 +76,7 @@ export function ArchiveSidebar({
       >
         <div className="relative text-sm leading-6">
           <div className="sidebar-fade-top" />
-          <div className="mb-4 pl-4">
-            <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-200">
-              {title}
-            </h2>
-            <p className="mt-1 font-mono text-xs text-gray-500 dark:text-gray-400">
-              {totalCount} {lang === "zh" ? "篇" : "issues"}
-            </p>
-          </div>
-
-          <div className="space-y-4">
+          <div id="navigation-items" className="space-y-4">
             {groups.map((group) => {
               const isOpen = !collapsed.has(group.label);
               return (
@@ -95,7 +84,7 @@ export function ArchiveSidebar({
                   <button
                     type="button"
                     onClick={() => toggleMonth(group.label)}
-                    className="mb-2 flex w-full items-center gap-1.5 rounded-md py-1 pl-4 text-left text-[11px] font-semibold text-gray-900 transition hover:text-gray-700 dark:text-gray-200 dark:hover:text-gray-300"
+                    className="sidebar-group-header mb-2.5 flex w-full items-center gap-2.5 py-0 pl-4 text-left font-semibold text-gray-900 transition hover:text-gray-700 dark:text-gray-200 dark:hover:text-gray-300 lg:mb-2.5"
                     aria-expanded={isOpen}
                   >
                     {isOpen ? (
@@ -103,14 +92,16 @@ export function ArchiveSidebar({
                     ) : (
                       <CaretRight size={12} weight="bold" className="shrink-0" />
                     )}
-                    <span className="flex-1">{group.label}</span>
-                    <span className="pr-2 text-[10px] font-normal text-gray-400">
+                    <h3 className="sidebar-title flex-1 text-[length:inherit] font-[inherit] leading-[inherit]">
+                      {group.label}
+                    </h3>
+                    <span className="pr-2 font-mono text-[10px] font-normal text-gray-400">
                       {group.reports.length}
                     </span>
                   </button>
 
                   {isOpen && (
-                    <ul className="space-y-px">
+                    <ul className="sidebar-group space-y-px">
                       {group.reports.map((report) => {
                         const isActive = report.date === activeDate;
                         return (
