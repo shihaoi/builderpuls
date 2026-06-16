@@ -67,3 +67,20 @@ export interface BuildIdeaSummary {
   reports: ReportMeta[];
   primaryReport: ReportMeta;
 }
+
+export interface PersonaDefinition {
+  slug: string;
+  label: Record<Lang, string>;
+  targetKeyword: Record<Lang, string>;
+  description: Record<Lang, string>;
+  directAnswer: Record<Lang, string>;
+  searchIntent: Record<Lang, string>;
+  useCases: Record<Lang, string[]>;
+  topicSlugs: string[];
+  keywords: string[];
+}
+
+export interface PersonaPage extends PersonaDefinition {
+  ideas: BuildIdeaSummary[];
+  topics: TopicSummary[];
+}

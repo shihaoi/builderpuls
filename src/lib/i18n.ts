@@ -25,6 +25,7 @@ export const UI: Record<
     tabArchive: string;
     tabTopics: string;
     tabBuildIdeas: string;
+    tabFor: string;
     tabMethodology: string;
     tabSource: string;
     searchPlaceholder: string;
@@ -64,6 +65,7 @@ export const UI: Record<
     tabArchive: "Archive",
     tabTopics: "Topics",
     tabBuildIdeas: "Build Ideas",
+    tabFor: "For",
     tabMethodology: "Method",
     tabSource: "Source",
     searchPlaceholder: "Search...",
@@ -102,6 +104,7 @@ export const UI: Record<
     tabArchive: "归档",
     tabTopics: "主题",
     tabBuildIdeas: "Build Ideas",
+    tabFor: "人群",
     tabMethodology: "方法论",
     tabSource: "来源",
     searchPlaceholder: "搜索...",

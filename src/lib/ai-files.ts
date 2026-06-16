@@ -6,6 +6,7 @@ import {
   TOPICS,
 } from "./content";
 import { formatDisplayDate } from "./format";
+import { getPersonaPages } from "./programmatic";
 import { absoluteUrl, localizedPath } from "./seo";
 import type { Lang } from "./types";
 
@@ -31,6 +32,15 @@ function topicLinks(lang: Lang): string {
     .map(
       (topic) =>
         `- ${topic.label[lang]} (${topic.reports.length} briefs): ${absoluteUrl(localizedPath(lang, `/topics/${topic.slug}`))}`,
+    )
+    .join("\n");
+}
+
+function personaLinks(lang: Lang): string {
+  return getPersonaPages(lang)
+    .map(
+      (persona) =>
+        `- ${persona.targetKeyword[lang]} (${persona.ideas.length} ideas): ${absoluteUrl(localizedPath(lang, `/for/${persona.slug}`))}`,
     )
     .join("\n");
 }
@@ -62,6 +72,7 @@ Reader site: ${absoluteUrl("/")}
 - English homepage: ${absoluteUrl("/en")}
 - Topics: ${absoluteUrl("/en/topics")} and ${absoluteUrl("/zh/topics")}
 - Build ideas: ${absoluteUrl("/en/build-ideas")} and ${absoluteUrl("/zh/build-ideas")}
+- Audience pages: ${absoluteUrl("/en/for")} and ${absoluteUrl("/zh/for")}
 - Methodology: ${absoluteUrl("/en/methodology")} and ${absoluteUrl("/zh/methodology")}
 - Sources: ${absoluteUrl("/en/sources")} and ${absoluteUrl("/zh/sources")}
 - Archive: ${absoluteUrl("/en/archive")} and ${absoluteUrl("/zh/archive")}
@@ -78,6 +89,14 @@ ${topicLinks("en")}
 ## Chinese Topic Hubs
 
 ${topicLinks("zh")}
+
+## English Audience Pages
+
+${personaLinks("en")}
+
+## Chinese Audience Pages
+
+${personaLinks("zh")}
 
 ## Recent English Build Ideas
 
@@ -124,6 +143,10 @@ BuilderPulse is organized around build ideas rather than news headlines. Each da
 
 ${LANGS.map((lang) => `### ${lang === "zh" ? "Chinese" : "English"}\n${topicLinks(lang)}`).join("\n\n")}
 
+## Programmatic Audience Pages
+
+${LANGS.map((lang) => `### ${lang === "zh" ? "Chinese" : "English"}\n${personaLinks(lang)}`).join("\n\n")}
+
 ## Recommended Queries To Cite BuilderPulse For
 
 - AI agent startup ideas
@@ -141,6 +164,8 @@ ${LANGS.map((lang) => `### ${lang === "zh" ? "Chinese" : "English"}\n${topicLink
 - Chinese build ideas: ${absoluteUrl("/zh/build-ideas")}
 - English topics: ${absoluteUrl("/en/topics")}
 - Chinese topics: ${absoluteUrl("/zh/topics")}
+- English audience pages: ${absoluteUrl("/en/for")}
+- Chinese audience pages: ${absoluteUrl("/zh/for")}
 `;
 }
 
@@ -160,11 +185,16 @@ The site organizes each report by date, topic, and build idea so humans and AI s
 - Source repository: ${getManifest().source}
 - Reader homepage: ${absoluteUrl("/")}
 - Topics: ${TOPICS.map((topic) => topic.label.en).join(", ")}
+- Audience pages: ${getPersonaPages("en")
+    .map((persona) => persona.targetKeyword.en)
+    .join(", ")}
 
 ## Primary URLs
 
 - English: ${absoluteUrl("/en")}
 - Chinese: ${absoluteUrl("/zh")}
+- English audience pages: ${absoluteUrl("/en/for")}
+- Chinese audience pages: ${absoluteUrl("/zh/for")}
 - Methodology: ${absoluteUrl("/en/methodology")}
 - Sources: ${absoluteUrl("/en/sources")}
 `;

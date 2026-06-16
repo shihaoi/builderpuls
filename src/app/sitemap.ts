@@ -7,6 +7,7 @@ import {
   LANGS,
   TOPICS,
 } from "@/lib/content";
+import { PERSONAS } from "@/lib/programmatic";
 import { absoluteUrl, languageAlternates, localizedPath } from "@/lib/seo";
 import type { Lang } from "@/lib/types";
 
@@ -17,6 +18,7 @@ const STATIC_PATHS = [
   "/archive",
   "/topics",
   "/build-ideas",
+  "/for",
   "/methodology",
   "/sources",
   "/about",
@@ -114,6 +116,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
           lastModified,
           changeFrequency: "daily",
           priority: 0.8,
+        }),
+      );
+    }
+
+    for (const persona of PERSONAS) {
+      urls.push(
+        entry({
+          lang,
+          path: `/for/${persona.slug}`,
+          lastModified,
+          changeFrequency: "daily",
+          priority: 0.82,
         }),
       );
     }

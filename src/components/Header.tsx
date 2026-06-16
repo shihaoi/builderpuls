@@ -12,6 +12,7 @@ export type HeaderTab =
   | "archive"
   | "topics"
   | "buildIdeas"
+  | "for"
   | "methodology"
   | "source";
 
@@ -48,6 +49,7 @@ export function Header({
     { id: "archive", label: t.tabArchive, href: `/${lang}/archive` },
     { id: "topics", label: t.tabTopics, href: `/${lang}/topics` },
     { id: "buildIdeas", label: t.tabBuildIdeas, href: `/${lang}/build-ideas` },
+    { id: "for", label: t.tabFor, href: `/${lang}/for` },
     { id: "methodology", label: t.tabMethodology, href: `/${lang}/methodology` },
     { id: "source", label: t.tabSource, href: `/${lang}/sources` },
   ];

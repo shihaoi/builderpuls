@@ -22,6 +22,7 @@ import {
 } from "@/lib/content";
 import { formatDisplayDate } from "@/lib/format";
 import { UI } from "@/lib/i18n";
+import { getPersonaPages } from "@/lib/programmatic";
 import { jsonLd, pageMetadata } from "@/lib/seo";
 import type { Lang } from "@/lib/types";
 
@@ -74,6 +75,7 @@ export default async function HomePage({
   const content = getReportContent(lang, latest.date);
   const sections = content ? parseReportSections(content, lang) : [];
   const topics = getTopics(lang);
+  const personas = getPersonaPages(lang);
   const ideas = getBuildIdeas(lang).slice(0, 6);
   const sectionLinks: HeaderSectionLink[] = sections
     .filter((section) => section.key !== "signals")
@@ -167,6 +169,34 @@ export default async function HomePage({
                   {topic.label[lang]}
                   <span className="ml-2 font-mono text-xs text-gray-400">
                     {topic.reports.length}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </section>
+
+          <section className="mt-10 border-t border-gray-100 pt-8 dark:border-white/[0.07]">
+            <div className="flex items-center justify-between gap-4">
+              <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-200">
+                {lang === "zh" ? "按人群浏览" : "Browse by Audience"}
+              </h2>
+              <Link
+                href={`/${lang}/for`}
+                className="text-sm font-semibold text-gray-900 underline decoration-primary/35 decoration-2 underline-offset-4 hover:decoration-primary dark:text-gray-100 dark:decoration-primary-light/40 dark:hover:decoration-primary-light"
+              >
+                {lang === "zh" ? "全部人群" : "All audiences"}
+              </Link>
+            </div>
+            <div className="mt-4 grid gap-2 sm:grid-cols-2">
+              {personas.map((persona) => (
+                <Link
+                  key={persona.slug}
+                  href={`/${lang}/for/${persona.slug}`}
+                  className="rounded-lg bg-gray-50 px-3 py-3 text-sm font-medium text-gray-800 transition hover:bg-gray-100 dark:bg-gray-800/60 dark:text-gray-300 dark:hover:bg-gray-800"
+                >
+                  {persona.label[lang]}
+                  <span className="ml-2 font-mono text-xs text-gray-400">
+                    {persona.ideas.length}
                   </span>
                 </Link>
               ))}

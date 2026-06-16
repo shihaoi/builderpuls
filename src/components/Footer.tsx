@@ -40,6 +40,7 @@ export function Footer({ lang, syncedAt }: FooterProps) {
           href: `/${lang}/build-ideas`,
           external: false,
         },
+        { label: t.tabFor, href: `/${lang}/for`, external: false },
         {
           label: t.tabMethodology,
           href: `/${lang}/methodology`,
