@@ -147,10 +147,12 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
       const activeCenter = activeTop + activeRect.height / 2;
 
       if (active.level === 2) {
+        const top = Math.max(0, activeCenter - MIN_INDICATOR_HEIGHT);
+
         setActiveIndicator({
           dotTop: activeCenter,
-          height: Math.max(MIN_INDICATOR_HEIGHT, activeRect.height - 8),
-          top: activeTop + 4,
+          height: activeCenter - top,
+          top,
         });
         return;
       }
@@ -177,7 +179,7 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
 
       setActiveIndicator({
         dotTop: activeCenter,
-        height: Math.max(MIN_INDICATOR_HEIGHT, Math.abs(activeCenter - top)),
+        height: activeCenter - top,
         top,
       });
     }
