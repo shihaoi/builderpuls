@@ -1,21 +1,22 @@
 import Link from "next/link";
-import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { notFound } from "next/navigation";
 import { ArchiveSidebar } from "@/components/ArchiveSidebar";
 import { DocsShell } from "@/components/DocsShell";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
-import { MarkdownContent } from "@/components/MarkdownContent";
+import type { HeaderSectionLink } from "@/components/Header";
+import { HomeBrief } from "@/components/HomeBrief";
 import { PageHeader } from "@/components/PageHeader";
 import { TableOfContents } from "@/components/TableOfContents";
 import {
-  extractToc,
   getAllReportDates,
   getManifest,
   getReport,
   getReportContent,
   getReports,
   groupReportsByMonth,
+  parseReportSections,
+  sectionsToToc,
 } from "@/lib/content";
 import { formatDisplayDate } from "@/lib/format";
 import { UI } from "@/lib/i18n";
@@ -69,11 +70,20 @@ export default async function ReportPage({
   const idx = reports.findIndex((r) => r.date === date);
   const prev = idx < reports.length - 1 ? reports[idx + 1] : null;
   const next = idx > 0 ? reports[idx - 1] : null;
-  const toc = extractToc(content);
+  const sections = parseReportSections(content, lang);
+  const sectionLinks: HeaderSectionLink[] = sections
+    .filter((section) => section.key !== "signals")
+    .map((section) => ({ id: section.id, label: section.title }));
+  const toc = sectionsToToc(sections);
 
   return (
     <>
-      <Header lang={lang} activeTab="read" alternateDate={date} />
+      <Header
+        lang={lang}
+        activeTab="read"
+        alternateDate={date}
+        sectionLinks={sectionLinks}
+      />
 
       <div className="pt-[var(--nav-height)] lg:pt-0">
         <DocsShell
@@ -99,7 +109,13 @@ export default async function ReportPage({
             </p>
           )}
 
-          <MarkdownContent id="content" content={content} />
+          {sections.length > 0 ? (
+            <HomeBrief sections={sections} lang={lang} />
+          ) : (
+            <p className="mt-8 text-sm text-gray-500 dark:text-gray-400">
+              {t.noContent}
+            </p>
+          )}
 
           <nav className="mt-12 flex items-stretch gap-3 border-t border-gray-100 pt-8 dark:border-gray-800/60 lg:hidden">
             {prev ? (

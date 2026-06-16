@@ -3,6 +3,7 @@ import { ArchiveSidebar } from "@/components/ArchiveSidebar";
 import { DocsShell } from "@/components/DocsShell";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import type { HeaderSectionLink } from "@/components/Header";
 import { HomeBrief } from "@/components/HomeBrief";
 import { PageHeader } from "@/components/PageHeader";
 import { TableOfContents } from "@/components/TableOfContents";
@@ -51,6 +52,9 @@ export default async function HomePage({
 
   const content = getReportContent(lang, latest.date);
   const sections = content ? parseReportSections(content, lang) : [];
+  const sectionLinks: HeaderSectionLink[] = sections
+    .filter((section) => section.key !== "signals")
+    .map((section) => ({ id: section.id, label: section.title }));
   const toc = sectionsToToc(sections);
 
   return (
@@ -59,6 +63,7 @@ export default async function HomePage({
         lang={lang}
         activeTab="read"
         alternateDate={latest.date}
+        sectionLinks={sectionLinks}
       />
 
       <div className="pt-[var(--nav-height)] lg:pt-0">

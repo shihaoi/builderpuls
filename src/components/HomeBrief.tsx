@@ -11,9 +11,9 @@ const SECTION_NUMBERS: Record<Lang, string[]> = {
 interface HomeBriefProps {
   sections: ReportSection[];
   lang: Lang;
-  date: string;
-  dateLabel: string;
-  readReportLabel: string;
+  date?: string;
+  dateLabel?: string;
+  readReportLabel?: string;
 }
 
 export function HomeBrief({
@@ -56,18 +56,20 @@ export function HomeBrief({
         </section>
       ))}
 
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-gray-200 bg-gray-50/60 px-5 py-4 dark:border-white/[0.07] dark:bg-gray-900/40">
-        <p className="font-mono text-xs text-gray-500 dark:text-gray-400">
-          {dateLabel}
-        </p>
-        <Link
-          href={`/${lang}/${date}`}
-          className="inline-flex items-center gap-2 text-sm font-medium text-primary transition hover:opacity-80 dark:text-primary-light"
-        >
-          {readReportLabel}
-          <ArrowRight size={16} weight="bold" />
-        </Link>
-      </div>
+      {date && dateLabel && readReportLabel ? (
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-gray-200 bg-gray-50/60 px-5 py-4 dark:border-white/[0.07] dark:bg-gray-900/40">
+          <p className="font-mono text-xs text-gray-500 dark:text-gray-400">
+            {dateLabel}
+          </p>
+          <Link
+            href={`/${lang}/${date}`}
+            className="inline-flex items-center gap-2 text-sm font-medium text-primary transition hover:opacity-80 dark:text-primary-light"
+          >
+            {readReportLabel}
+            <ArrowRight size={16} weight="bold" />
+          </Link>
+        </div>
+      ) : null}
     </div>
   );
 }

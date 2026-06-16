@@ -9,16 +9,23 @@ import { ThemeToggle } from "./ThemeToggle";
 
 export type HeaderTab = "read" | "archive" | "source";
 
+export interface HeaderSectionLink {
+  id: string;
+  label: string;
+}
+
 interface HeaderProps {
   lang: Lang;
   activeTab?: HeaderTab;
   alternateDate?: string;
+  sectionLinks?: HeaderSectionLink[];
 }
 
 export function Header({
   lang,
   activeTab = "read",
   alternateDate,
+  sectionLinks = [],
 }: HeaderProps) {
   const t = UI[lang];
   const alt = otherLang(lang);
@@ -85,28 +92,45 @@ export function Header({
           </nav>
         </div>
 
-        <div className="relative hidden h-12 px-12 lg:flex">
-          {tabs.map((tab) =>
-            tab.external ? (
-              <a
-                key={tab.id}
-                href={tab.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`nav-tabs-item px-3 ${activeTab === tab.id ? "is-active" : ""}`}
-              >
-                {tab.label}
-              </a>
-            ) : (
-              <Link
-                key={tab.id}
-                href={tab.href}
-                className={`nav-tabs-item px-3 ${activeTab === tab.id ? "is-active" : ""}`}
-                aria-current={activeTab === tab.id ? "page" : undefined}
-              >
-                {tab.label}
-              </Link>
-            ),
+        <div className="relative hidden h-12 items-center overflow-x-auto px-12 lg:flex">
+          {sectionLinks.length > 0 ? (
+            <nav
+              className="flex min-w-0 items-center gap-2"
+              aria-label={t.onThisPage}
+            >
+              {sectionLinks.map((section) => (
+                <a
+                  key={section.id}
+                  href={`#${section.id}`}
+                  className="section-tabs-item"
+                >
+                  {section.label}
+                </a>
+              ))}
+            </nav>
+          ) : (
+            tabs.map((tab) =>
+              tab.external ? (
+                <a
+                  key={tab.id}
+                  href={tab.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`nav-tabs-item px-3 ${activeTab === tab.id ? "is-active" : ""}`}
+                >
+                  {tab.label}
+                </a>
+              ) : (
+                <Link
+                  key={tab.id}
+                  href={tab.href}
+                  className={`nav-tabs-item px-3 ${activeTab === tab.id ? "is-active" : ""}`}
+                  aria-current={activeTab === tab.id ? "page" : undefined}
+                >
+                  {tab.label}
+                </Link>
+              ),
+            )
           )}
         </div>
       </div>
