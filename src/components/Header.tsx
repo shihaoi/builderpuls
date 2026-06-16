@@ -7,7 +7,13 @@ import type { Lang } from "@/lib/types";
 import { UI, otherLang } from "@/lib/i18n";
 import { ThemeToggle } from "./ThemeToggle";
 
-export type HeaderTab = "read" | "archive" | "source";
+export type HeaderTab =
+  | "read"
+  | "archive"
+  | "topics"
+  | "buildIdeas"
+  | "methodology"
+  | "source";
 
 export interface HeaderSectionLink {
   id: string;
@@ -32,17 +38,19 @@ export function Header({
   const altHref = alternateDate ? `/${alt}/${alternateDate}` : `/${alt}`;
   const searchEntries = getSearchEntries(lang);
 
-  const tabs: { id: HeaderTab; label: string; href: string; external?: boolean }[] =
-    [
-      { id: "read", label: t.tabRead, href: `/${lang}` },
-      { id: "archive", label: t.tabArchive, href: `/${lang}#archive` },
-      {
-        id: "source",
-        label: t.tabSource,
-        href: "https://github.com/BuilderPulse/BuilderPulse",
-        external: true,
-      },
-    ];
+  const tabs: {
+    id: HeaderTab;
+    label: string;
+    href: string;
+    external?: boolean;
+  }[] = [
+    { id: "read", label: t.tabRead, href: `/${lang}` },
+    { id: "archive", label: t.tabArchive, href: `/${lang}/archive` },
+    { id: "topics", label: t.tabTopics, href: `/${lang}/topics` },
+    { id: "buildIdeas", label: t.tabBuildIdeas, href: `/${lang}/build-ideas` },
+    { id: "methodology", label: t.tabMethodology, href: `/${lang}/methodology` },
+    { id: "source", label: t.tabSource, href: `/${lang}/sources` },
+  ];
 
   return (
     <header

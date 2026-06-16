@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { Lang } from "@/lib/types";
 import { UI } from "@/lib/i18n";
+import { pageMetadata } from "@/lib/seo";
 
 const LANGS: Lang[] = ["en", "zh"];
 
@@ -19,15 +20,14 @@ export async function generateMetadata({
 
   const t = UI[lang as Lang];
   return {
+    ...pageMetadata({
+      lang: lang as Lang,
+      title: t.siteName,
+      description: t.tagline,
+    }),
     title: {
       default: t.siteName,
       template: `%s · ${t.siteName}`,
-    },
-    description: t.tagline,
-    openGraph: {
-      title: t.siteName,
-      description: t.tagline,
-      type: "website",
     },
   };
 }

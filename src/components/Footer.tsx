@@ -33,11 +33,27 @@ export function Footer({ lang, syncedAt }: FooterProps) {
       title: t.footerReader,
       links: [
         { label: t.tabRead, href: `/${lang}`, external: false },
-        { label: t.tabArchive, href: `/${lang}#archive`, external: false },
+        { label: t.tabArchive, href: `/${lang}/archive`, external: false },
+        { label: t.tabTopics, href: `/${lang}/topics`, external: false },
+        {
+          label: t.tabBuildIdeas,
+          href: `/${lang}/build-ideas`,
+          external: false,
+        },
+        {
+          label: t.tabMethodology,
+          href: `/${lang}/methodology`,
+          external: false,
+        },
         {
           label: t.tabSource,
-          href: "https://github.com/BuilderPulse/BuilderPulse",
-          external: true,
+          href: `/${lang}/sources`,
+          external: false,
+        },
+        {
+          label: lang === "zh" ? "关于" : "About",
+          href: `/${lang}/about`,
+          external: false,
         },
       ],
     },

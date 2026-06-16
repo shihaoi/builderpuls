@@ -2,7 +2,7 @@
 
 import { CaretDown, CaretRight } from "@phosphor-icons/react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useScrollingFlash } from "@/hooks/use-scrolling-flash";
 import { formatShortDate } from "@/lib/format";
 import type { Lang, ReportMeta } from "@/lib/types";
@@ -39,22 +39,19 @@ export function ArchiveSidebar({
     return initial;
   });
 
-  useEffect(() => {
+  const effectiveCollapsed = useMemo(() => {
     const activeGroup = groups.find((g) =>
       g.reports.some((r) => r.date === activeDate),
     );
-    if (!activeGroup) return;
-    setCollapsed((prev) => {
-      if (!prev.has(activeGroup.label)) return prev;
-      const next = new Set(prev);
-      next.delete(activeGroup.label);
-      return next;
-    });
-  }, [activeDate, groups]);
+    if (!activeGroup || !collapsed.has(activeGroup.label)) return collapsed;
+    const next = new Set(collapsed);
+    next.delete(activeGroup.label);
+    return next;
+  }, [activeDate, collapsed, groups]);
 
   useEffect(() => {
     ref.current?.scrollTo({ top: 0 });
-  }, [activeDate]);
+  }, [activeDate, ref]);
 
   function toggleMonth(label: string) {
     setCollapsed((prev) => {
@@ -81,7 +78,7 @@ export function ArchiveSidebar({
         <div className="relative text-sm leading-6">
           <div id="navigation-items" className="space-y-4">
             {groups.map((group) => {
-              const isOpen = !collapsed.has(group.label);
+              const isOpen = !effectiveCollapsed.has(group.label);
               return (
                 <div key={group.label}>
                   <button

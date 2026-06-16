@@ -10,19 +10,21 @@ import { PageHeader } from "@/components/PageHeader";
 import { TableOfContents } from "@/components/TableOfContents";
 import {
   getAllReportDates,
+  getBuildIdeaSlug,
   getManifest,
   getReport,
   getReportContent,
+  getReportTopics,
   getReports,
   groupReportsByMonth,
+  LANGS,
   parseReportSections,
   sectionsToToc,
 } from "@/lib/content";
 import { formatDisplayDate } from "@/lib/format";
 import { UI } from "@/lib/i18n";
+import { jsonLd, pageMetadata } from "@/lib/seo";
 import type { Lang } from "@/lib/types";
-
-const LANGS: Lang[] = ["en", "zh"];
 
 export async function generateStaticParams() {
   const params: { lang: string; date: string }[] = [];
@@ -45,10 +47,13 @@ export async function generateMetadata({
   const report = getReport(lang, date);
   if (!report) return {};
 
-  return {
+  return pageMetadata({
+    lang,
+    path: `/${date}`,
     title: report.buildIdea || report.title,
     description: report.summary,
-  };
+    type: "article",
+  });
 }
 
 export default async function ReportPage({
@@ -71,6 +76,8 @@ export default async function ReportPage({
   const prev = idx < reports.length - 1 ? reports[idx + 1] : null;
   const next = idx > 0 ? reports[idx - 1] : null;
   const sections = parseReportSections(content, lang);
+  const topics = getReportTopics(report);
+  const buildIdeaSlug = getBuildIdeaSlug(report);
   const sectionLinks: HeaderSectionLink[] = sections
     .filter((section) => section.key !== "signals")
     .map((section) => ({ id: section.id, label: section.title }));
@@ -97,6 +104,25 @@ export default async function ReportPage({
           }
           toc={<TableOfContents items={toc} title={t.onThisPage} />}
         >
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: jsonLd({
+                "@context": "https://schema.org",
+                "@type": "Article",
+                headline: report.buildIdea || report.title,
+                description: report.summary,
+                datePublished: report.date,
+                dateModified: manifest.syncedAt ?? report.date,
+                inLanguage: lang === "zh" ? "zh-CN" : "en",
+                isPartOf: {
+                  "@type": "WebSite",
+                  name: "BuilderPulse",
+                },
+              }),
+            }}
+          />
+
           <PageHeader
             eyebrow={t.tabRead}
             title={report.buildIdea || formatDisplayDate(date, lang)}
@@ -116,6 +142,29 @@ export default async function ReportPage({
               {t.noContent}
             </p>
           )}
+
+          <section className="mt-12 border-t border-gray-100 pt-8 dark:border-white/[0.07]">
+            <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-200">
+              {lang === "zh" ? "继续探索" : "Keep Exploring"}
+            </h2>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Link
+                href={`/${lang}/build-ideas/${buildIdeaSlug}`}
+                className="rounded-lg bg-gray-50 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 dark:bg-gray-800/60 dark:text-gray-300 dark:hover:bg-gray-800"
+              >
+                {lang === "zh" ? "Build idea 页面" : "Build idea page"}
+              </Link>
+              {topics.map((topic) => (
+                <Link
+                  key={topic.slug}
+                  href={`/${lang}/topics/${topic.slug}`}
+                  className="rounded-lg bg-gray-50 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 dark:bg-gray-800/60 dark:text-gray-300 dark:hover:bg-gray-800"
+                >
+                  {topic.label[lang]}
+                </Link>
+              ))}
+            </div>
+          </section>
 
           <nav className="mt-12 flex items-stretch gap-3 border-t border-gray-100 pt-8 dark:border-gray-800/60 lg:hidden">
             {prev ? (

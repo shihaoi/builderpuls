@@ -48,3 +48,22 @@ export interface SearchEntry {
   dateLabel: string;
   content: string;
 }
+
+export interface TopicDefinition {
+  slug: string;
+  label: Record<Lang, string>;
+  description: Record<Lang, string>;
+  keywords: string[];
+}
+
+export interface TopicSummary extends TopicDefinition {
+  reports: ReportMeta[];
+}
+
+export interface BuildIdeaSummary {
+  slug: string;
+  title: string;
+  summary: string;
+  reports: ReportMeta[];
+  primaryReport: ReportMeta;
+}

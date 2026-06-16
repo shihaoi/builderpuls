@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
+import { SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
 const inter = Inter({
@@ -16,6 +17,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "BuilderPulse",
   description:
     "Daily opportunity brief for indie hackers. One build idea. One reason it matters now.",

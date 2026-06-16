@@ -23,6 +23,9 @@ export const UI: Record<
     whyNow: string;
     tabRead: string;
     tabArchive: string;
+    tabTopics: string;
+    tabBuildIdeas: string;
+    tabMethodology: string;
     tabSource: string;
     searchPlaceholder: string;
     upstreamRepo: string;
@@ -59,6 +62,9 @@ export const UI: Record<
     whyNow: "Why now",
     tabRead: "Daily Brief",
     tabArchive: "Archive",
+    tabTopics: "Topics",
+    tabBuildIdeas: "Build Ideas",
+    tabMethodology: "Method",
     tabSource: "Source",
     searchPlaceholder: "Search...",
     upstreamRepo: "BuilderPulse Repo",
@@ -94,6 +100,9 @@ export const UI: Record<
     whyNow: "为什么是现在",
     tabRead: "每日简报",
     tabArchive: "归档",
+    tabTopics: "主题",
+    tabBuildIdeas: "Build Ideas",
+    tabMethodology: "方法论",
     tabSource: "来源",
     searchPlaceholder: "搜索...",
     upstreamRepo: "上游仓库",
