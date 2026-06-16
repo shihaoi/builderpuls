@@ -79,7 +79,6 @@ export function ArchiveSidebar({
         className={`sidebar-scroll absolute inset-0 overflow-auto pb-10 pr-8${isScrolling ? " is-scrolling" : ""}`}
       >
         <div className="relative text-sm leading-6">
-          <div className="sidebar-fade-top" />
           <div id="navigation-items" className="space-y-4">
             {groups.map((group) => {
               const isOpen = !collapsed.has(group.label);
@@ -105,7 +104,7 @@ export function ArchiveSidebar({
                   </button>
 
                   {isOpen && (
-                    <ul className="sidebar-group space-y-px">
+                    <ul className="sidebar-group grid grid-cols-4 gap-1 pl-4 pr-1">
                       {group.reports.map((report) => {
                         const isActive = report.date === activeDate;
                         return (

@@ -99,7 +99,7 @@ export default async function ReportPage({
             </p>
           )}
 
-          <MarkdownContent content={content} />
+          <MarkdownContent id="content" content={content} />
 
           <nav className="mt-12 flex items-stretch gap-3 border-t border-gray-100 pt-8 dark:border-gray-800/60 lg:hidden">
             {prev ? (

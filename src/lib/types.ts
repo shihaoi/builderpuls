@@ -24,3 +24,27 @@ export interface TocItem {
   text: string;
   level: 2 | 3;
 }
+
+export type ReportSectionKey =
+  | "signals"
+  | "discovery"
+  | "tech"
+  | "competitive"
+  | "trends"
+  | "action";
+
+export interface ReportSection {
+  key: ReportSectionKey;
+  id: string;
+  title: string;
+  content: string;
+}
+
+export interface SearchEntry {
+  date: string;
+  href: string;
+  title: string;
+  summary: string;
+  dateLabel: string;
+  content: string;
+}
