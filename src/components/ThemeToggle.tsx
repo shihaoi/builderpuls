@@ -36,7 +36,9 @@ function runFallbackWipe(next: boolean) {
   overlay.className = "theme-transition-wipe";
   overlay.style.setProperty(
     "--theme-wipe-color",
-    next ? "rgba(9, 9, 11, 0.5)" : "rgba(253, 253, 247, 0.85)",
+    next
+      ? "color-mix(in srgb, var(--background) 50%, transparent)"
+      : "color-mix(in srgb, var(--background) 85%, transparent)",
   );
 
   document.documentElement.classList.add("theme-transitioning");

@@ -96,6 +96,7 @@ export default async function ReportPage({
         <DocsShell
           sidebar={
             <ArchiveSidebar
+              key={date}
               groups={groupReportsByMonth(reports, lang)}
               lang={lang}
               activeDate={date}

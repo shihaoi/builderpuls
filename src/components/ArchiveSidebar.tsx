@@ -1,10 +1,10 @@
 "use client";
 
-import { CaretDown, CaretRight } from "@phosphor-icons/react";
+import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useScrollingFlash } from "@/hooks/use-scrolling-flash";
-import { formatShortDate } from "@/lib/format";
+import { formatDisplayDate } from "@/lib/format";
 import type { Lang, ReportMeta } from "@/lib/types";
 
 export interface ArchiveGroup {
@@ -26,44 +26,40 @@ export function ArchiveSidebar({
   title,
 }: ArchiveSidebarProps) {
   const { ref, isScrolling } = useScrollingFlash<HTMLDivElement>();
-  const [collapsed, setCollapsed] = useState<Set<string>>(() => {
-    const activeGroup = groups.find((g) =>
-      g.reports.some((r) => r.date === activeDate),
-    );
-    const initial = new Set<string>();
+  const monthKeys = useMemo(
+    () =>
+      groups
+        .map((group) => group.reports[0]?.date.slice(0, 7))
+        .filter((key): key is string => Boolean(key)),
+    [groups],
+  );
+  const activeMonthKey = activeDate.slice(0, 7);
+  const [monthIndex, setMonthIndex] = useState(() =>
+    Math.max(0, monthKeys.indexOf(activeMonthKey)),
+  );
+  const visibleGroup = groups[monthIndex] ?? groups[0];
+  const visibleMonth =
+    visibleGroup?.reports[0]?.date.slice(0, 7) ?? activeMonthKey;
+  const reportsByDate = useMemo(() => {
+    const map = new Map<string, ReportMeta>();
     for (const group of groups) {
-      if (group.label !== activeGroup?.label) {
-        initial.add(group.label);
+      for (const report of group.reports) {
+        map.set(report.date, report);
       }
     }
-    return initial;
-  });
-
-  const effectiveCollapsed = useMemo(() => {
-    const activeGroup = groups.find((g) =>
-      g.reports.some((r) => r.date === activeDate),
-    );
-    if (!activeGroup || !collapsed.has(activeGroup.label)) return collapsed;
-    const next = new Set(collapsed);
-    next.delete(activeGroup.label);
-    return next;
-  }, [activeDate, collapsed, groups]);
+    return map;
+  }, [groups]);
+  const days = useMemo(() => getCalendarDays(visibleMonth), [visibleMonth]);
+  const weekdayLabels =
+    lang === "zh"
+      ? ["日", "一", "二", "三", "四", "五", "六"]
+      : ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
   useEffect(() => {
     ref.current?.scrollTo({ top: 0 });
   }, [activeDate, ref]);
 
-  function toggleMonth(label: string) {
-    setCollapsed((prev) => {
-      const next = new Set(prev);
-      if (next.has(label)) {
-        next.delete(label);
-      } else {
-        next.add(label);
-      }
-      return next;
-    });
-  }
+  if (!visibleGroup) return null;
 
   return (
     <nav
@@ -76,56 +72,113 @@ export function ArchiveSidebar({
         className={`sidebar-scroll absolute inset-0 overflow-auto pb-10 pr-8${isScrolling ? " is-scrolling" : ""}`}
       >
         <div className="relative text-sm leading-6">
-          <div id="navigation-items" className="space-y-4">
-            {groups.map((group) => {
-              const isOpen = !effectiveCollapsed.has(group.label);
-              return (
-                <div key={group.label}>
-                  <button
-                    type="button"
-                    onClick={() => toggleMonth(group.label)}
-                    className="sidebar-group-header mb-2.5 flex w-full items-center gap-2.5 py-0 pl-4 text-left font-semibold text-gray-900 transition hover:text-gray-700 dark:text-gray-200 dark:hover:text-gray-300 lg:mb-2.5"
-                    aria-expanded={isOpen}
-                  >
-                    {isOpen ? (
-                      <CaretDown size={12} weight="bold" className="shrink-0" />
-                    ) : (
-                      <CaretRight size={12} weight="bold" className="shrink-0" />
-                    )}
-                    <h3 className="sidebar-title flex-1 text-[length:inherit] font-[inherit] leading-[inherit]">
-                      {group.label}
-                    </h3>
-                    <span className="pr-2 font-mono text-[10px] font-normal text-gray-400">
-                      {group.reports.length}
-                    </span>
-                  </button>
-
-                  {isOpen && (
-                    <ul className="sidebar-group grid grid-cols-4 gap-1 pl-4 pr-1">
-                      {group.reports.map((report) => {
-                        const isActive = report.date === activeDate;
-                        return (
-                          <li key={report.date}>
-                            <Link
-                              href={`/${lang}/${report.date}`}
-                              className={`sidebar-link ${isActive ? "is-active" : ""}`}
-                              aria-current={isActive ? "page" : undefined}
-                            >
-                              <time className="font-mono text-xs">
-                                {formatShortDate(report.date, lang)}
-                              </time>
-                            </Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  )}
+          <div id="navigation-items" className="pl-4 pr-1">
+            <div className="calendar-sidebar">
+              <div className="calendar-sidebar-header">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setMonthIndex((index) => Math.max(0, index - 1))
+                  }
+                  disabled={monthIndex === 0}
+                  className="calendar-sidebar-nav"
+                  aria-label={lang === "zh" ? "更新月份" : "Newer month"}
+                >
+                  <CaretLeft size={15} weight="bold" aria-hidden />
+                </button>
+                <div>
+                  <h3 className="calendar-sidebar-title">{visibleGroup.label}</h3>
+                  <p className="calendar-sidebar-count">
+                    {visibleGroup.reports.length}{" "}
+                    {lang === "zh" ? "篇日报" : "briefs"}
+                  </p>
                 </div>
-              );
-            })}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setMonthIndex((index) =>
+                      Math.min(monthKeys.length - 1, index + 1),
+                    )
+                  }
+                  disabled={monthIndex >= monthKeys.length - 1}
+                  className="calendar-sidebar-nav"
+                  aria-label={lang === "zh" ? "更早月份" : "Older month"}
+                >
+                  <CaretRight size={15} weight="bold" aria-hidden />
+                </button>
+              </div>
+
+              <div className="calendar-sidebar-weekdays" aria-hidden>
+                {weekdayLabels.map((label) => (
+                  <span key={label}>{label}</span>
+                ))}
+              </div>
+
+              <ol className="calendar-sidebar-grid">
+                {days.map((day) => {
+                  const report = reportsByDate.get(day.date);
+                  const isActive = day.date === activeDate;
+                  const className = [
+                    "calendar-sidebar-day",
+                    day.isOutside ? "is-outside" : "",
+                    report ? "has-report" : "",
+                    isActive ? "is-active" : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ");
+
+                  return (
+                    <li key={day.date}>
+                      {report ? (
+                        <Link
+                          href={`/${lang}/${report.date}`}
+                          className={className}
+                          aria-current={isActive ? "page" : undefined}
+                          title={
+                            report.buildIdea ||
+                            formatDisplayDate(report.date, lang)
+                          }
+                        >
+                          <time dateTime={report.date}>{day.day}</time>
+                        </Link>
+                      ) : (
+                        <span className={className} aria-disabled="true">
+                          {day.day}
+                        </span>
+                      )}
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
           </div>
         </div>
       </div>
     </nav>
   );
+}
+
+function getCalendarDays(monthKey: string) {
+  const [year, month] = monthKey.split("-").map(Number);
+  const firstDate = new Date(year, month - 1, 1);
+  const start = new Date(firstDate);
+  start.setDate(firstDate.getDate() - firstDate.getDay());
+
+  return Array.from({ length: 42 }, (_, index) => {
+    const date = new Date(start);
+    date.setDate(start.getDate() + index);
+
+    return {
+      date: toDateKey(date),
+      day: date.getDate(),
+      isOutside: date.getMonth() !== month - 1,
+    };
+  });
+}
+
+function toDateKey(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }

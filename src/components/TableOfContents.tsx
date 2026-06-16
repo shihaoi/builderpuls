@@ -3,12 +3,31 @@
 import { useEffect, useRef, useState } from "react";
 import type { TocItem } from "@/lib/types";
 
-const HEADER_OFFSET = 152;
+const FALLBACK_SCROLL_OFFSET = 152;
 const BOTTOM_LOCK_THRESHOLD = 80;
 
 interface TableOfContentsProps {
   items: TocItem[];
   title: string;
+}
+
+function getScrollOffset() {
+  const rawValue = getComputedStyle(document.documentElement)
+    .getPropertyValue("--scroll-mt")
+    .trim();
+  const parsedValue = Number.parseFloat(rawValue);
+
+  if (!Number.isFinite(parsedValue)) return FALLBACK_SCROLL_OFFSET;
+
+  return rawValue.endsWith("rem")
+    ? parsedValue *
+        Number.parseFloat(getComputedStyle(document.documentElement).fontSize)
+    : parsedValue;
+}
+
+function scrollToHeading(heading: HTMLElement) {
+  const top = heading.getBoundingClientRect().top + window.scrollY - getScrollOffset();
+  window.scrollTo({ top, behavior: "smooth" });
 }
 
 function revealActiveLink(container: HTMLElement, link: HTMLElement) {
@@ -27,31 +46,21 @@ function revealActiveLink(container: HTMLElement, link: HTMLElement) {
 export function TableOfContents({ items, title }: TableOfContentsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
+  const itemRefs = useRef(new Map<string, HTMLLIElement>());
   const lastSyncedId = useRef<string>("");
   const [activeId, setActiveId] = useState<string>("");
-  const [marker, setMarker] = useState({ height: 0, top: 0 });
-
-  function syncMarker(link: HTMLElement) {
-    const list = listRef.current;
-    if (!list) return;
-
-    const linkRect = link.getBoundingClientRect();
-    const listRect = list.getBoundingClientRect();
-    setMarker({
-      height: linkRect.height,
-      top: linkRect.top - listRect.top,
-    });
-  }
+  const [activePath, setActivePath] = useState("");
 
   useEffect(() => {
-    const headings = items
-      .map((item) => document.getElementById(item.id))
-      .filter(Boolean) as HTMLElement[];
+    const headings = items.flatMap((item) => {
+      const element = document.getElementById(item.id);
+      return element ? [{ element, id: item.id }] : [];
+    });
 
     if (headings.length === 0) return;
 
     function updateActive() {
-      const marker = window.scrollY + HEADER_OFFSET;
+      const scrollOffset = getScrollOffset();
       const nearBottom =
         window.scrollY + window.innerHeight >=
         document.documentElement.scrollHeight - BOTTOM_LOCK_THRESHOLD;
@@ -62,7 +71,9 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
 
       if (!nearBottom) {
         for (const heading of headings) {
-          if (heading.offsetTop <= marker) {
+          const top = heading.element.getBoundingClientRect().top;
+
+          if (top <= scrollOffset + 1) {
             current = heading.id;
           } else {
             break;
@@ -88,23 +99,59 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
     if (!activeLink) return;
 
     revealActiveLink(containerRef.current, activeLink);
-    syncMarker(activeLink);
     lastSyncedId.current = activeId;
   }, [activeId]);
 
   useEffect(() => {
-    if (!activeId || !containerRef.current) return;
-
-    function updateMarker() {
-      const activeLink = containerRef.current?.querySelector<HTMLElement>(
-        `a[href="#${CSS.escape(activeId)}"]`,
-      );
-      if (activeLink) syncMarker(activeLink);
+    const list = listRef.current;
+    if (!activeId || !list) {
+      setActivePath("");
+      return;
     }
 
-    updateMarker();
-    window.addEventListener("resize", updateMarker);
-    return () => window.removeEventListener("resize", updateMarker);
+    function updateActivePath() {
+      const list = listRef.current;
+      const activeItem = itemRefs.current.get(activeId);
+      const activeIndex = items.findIndex((item) => item.id === activeId);
+      if (!list || !activeItem || activeIndex < 0) return;
+
+      const activeRect = activeItem.getBoundingClientRect();
+      const listRect = list.getBoundingClientRect();
+      const active = items[activeIndex];
+      const mainX = 1;
+      const branchX = 22;
+      const activeTop = activeRect.top - listRect.top;
+      const activeCenter = activeTop + activeRect.height / 2;
+
+      if (active.level === 2) {
+        setActivePath(`M ${mainX} ${activeTop + 3} V ${activeTop + activeRect.height - 3}`);
+        return;
+      }
+
+      const parent = [...items]
+        .slice(0, activeIndex)
+        .reverse()
+        .find((item) => item.level === 2);
+      const parentItem = parent ? itemRefs.current.get(parent.id) : null;
+
+      if (!parentItem) {
+        setActivePath(`M ${mainX} ${activeCenter - 12} L ${branchX} ${activeCenter} V ${activeCenter + 12}`);
+        return;
+      }
+
+      const parentRect = parentItem.getBoundingClientRect();
+      const parentTop = parentRect.top - listRect.top;
+      const parentCenter = parentTop + parentRect.height / 2;
+      const bendY = Math.min(parentCenter + 19, activeCenter - 12);
+
+      setActivePath(
+        `M ${mainX} ${parentCenter - 14} V ${bendY} L ${branchX} ${activeCenter - 12} V ${activeCenter + 12}`,
+      );
+    }
+
+    updateActivePath();
+    window.addEventListener("resize", updateActivePath);
+    return () => window.removeEventListener("resize", updateActivePath);
   }, [activeId, items]);
 
   if (items.length === 0) return null;
@@ -135,31 +182,34 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
               <span>{title}</span>
             </span>
           </h2>
-          <div className="relative mt-4 pl-5">
-            <span
-              className="pointer-events-none absolute bottom-0 left-0 top-0 w-px bg-gray-200 dark:bg-white/10"
-              aria-hidden
-            />
-            <span
-              className="pointer-events-none absolute left-0 w-px bg-gray-900 transition-[height,transform] duration-200 ease-out dark:bg-gray-100"
-              style={{
-                height: marker.height,
-                opacity: marker.height ? 1 : 0,
-                transform: `translateY(${marker.top}px)`,
-              }}
-              aria-hidden
-            />
+          <div className="toc-tree relative mt-4">
+            <span className="toc-tree-line" aria-hidden />
+            <svg className="toc-tree-active" aria-hidden>
+              <path d={activePath} />
+            </svg>
             <ul ref={listRef} className="toc space-y-0.5">
               {items.map((item) => (
-                <li key={item.id} className={item.level === 3 ? "pl-5" : ""}>
+                <li
+                  key={item.id}
+                  ref={(node) => {
+                    if (node) {
+                      itemRefs.current.set(item.id, node);
+                    } else {
+                      itemRefs.current.delete(item.id);
+                    }
+                  }}
+                  className={`toc-item ${activeId === item.id ? "is-active" : ""} ${item.level === 3 ? "toc-item-level-3" : "toc-item-level-2"}`}
+                >
                   <a
                     href={`#${item.id}`}
                     onClick={(e) => {
                       e.preventDefault();
-                      document.getElementById(item.id)?.scrollIntoView({
-                        behavior: "smooth",
-                        block: "start",
-                      });
+                      const heading = document.getElementById(item.id);
+                      if (!heading) return;
+
+                      setActiveId(item.id);
+                      scrollToHeading(heading);
+                      history.replaceState(null, "", `#${item.id}`);
                     }}
                     className={`toc-link ${activeId === item.id ? "is-active" : ""} ${item.level === 3 ? "toc-link-level-3" : "toc-link-level-2"}`}
                     aria-current={activeId === item.id ? "location" : undefined}

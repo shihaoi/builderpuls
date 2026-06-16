@@ -95,6 +95,7 @@ export default async function HomePage({
         <DocsShell
           sidebar={
             <ArchiveSidebar
+              key={latest.date}
               groups={groupReportsByMonth(reports, lang)}
               lang={lang}
               activeDate={latest.date}
