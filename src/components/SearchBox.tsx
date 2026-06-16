@@ -134,7 +134,7 @@ export function SearchBox({ entries, lang, placeholder }: SearchBoxProps) {
   return (
     <div
       ref={rootRef}
-      className="relative w-full max-w-sm"
+      className="relative w-56 max-w-full transition-[width] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] focus-within:w-96 motion-reduce:transition-none"
       onBlur={(event) => {
         if (!rootRef.current?.contains(event.relatedTarget as Node | null)) {
           setOpen(false);
@@ -144,7 +144,7 @@ export function SearchBox({ entries, lang, placeholder }: SearchBoxProps) {
       <form
         role="search"
         onSubmit={submitSearch}
-        className="flex h-11 w-full items-center rounded-xl border border-gray-200 bg-white px-3.5 text-sm text-gray-500 transition focus-within:border-gray-300 focus-within:text-gray-700 focus-within:ring-2 focus-within:ring-gray-900/5 dark:border-white/[0.08] dark:bg-zinc-900 dark:text-gray-400 dark:focus-within:border-white/15 dark:focus-within:text-gray-200"
+        className="flex h-11 w-full items-center rounded-xl border border-gray-200 bg-white px-3.5 text-sm text-gray-500 shadow-sm shadow-transparent transition-[border-color,box-shadow,color,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] focus-within:border-gray-300 focus-within:text-gray-700 focus-within:shadow-lg focus-within:shadow-gray-900/5 focus-within:ring-2 focus-within:ring-gray-900/5 motion-reduce:transition-none dark:border-white/[0.08] dark:bg-zinc-900 dark:text-gray-400 dark:focus-within:border-white/15 dark:focus-within:text-gray-200 dark:focus-within:shadow-black/20"
       >
         <MagnifyingGlass size={16} className="mr-2 shrink-0 opacity-60" />
         <input
