@@ -76,6 +76,8 @@ export function Footer({ lang, syncedAt }: FooterProps) {
       title: t.footerMeta,
       links: [
         { label: `${t.syncedAt}: ${syncedLabel}`, href: "#", external: false },
+        { label: "llms.txt", href: "/llms.txt", external: false },
+        { label: "ai-search.md", href: "/ai-search.md", external: false },
         {
           label: lang === "zh" ? "English" : "简体中文",
           href: lang === "zh" ? "/en" : "/zh",

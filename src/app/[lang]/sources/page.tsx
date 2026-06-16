@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SeoPage } from "@/components/SeoPage";
 import { getManifest, LANGS } from "@/lib/content";
@@ -15,6 +16,13 @@ const SOURCES = [
   "Indie Hackers",
   "Lobsters",
   "DEV Community",
+];
+
+const MACHINE_FILES = [
+  ["/llms.txt", "llms.txt"],
+  ["/ai-search.md", "ai-search.md"],
+  ["/about.md", "about.md"],
+  ["/sources.md", "sources.md"],
 ];
 
 export async function generateMetadata({
@@ -76,7 +84,7 @@ export default async function SourcesPage({
         </div>
       </section>
 
-      <section className="mt-8">
+      <section className="mt-8 border-b border-gray-100 pb-8 dark:border-white/[0.07]">
         <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-200">
           {lang === "zh" ? "内容来源" : "Content Source"}
         </h2>
@@ -93,6 +101,28 @@ export default async function SourcesPage({
         >
           BuilderPulse/BuilderPulse
         </a>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-200">
+          {lang === "zh" ? "机器可读入口" : "Machine-Readable Files"}
+        </h2>
+        <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-400">
+          {lang === "zh"
+            ? "这些纯文本和 Markdown 文件用于帮助 AI 搜索、引用系统和 agent 快速理解 BuilderPulse 的实体、主题、来源和推荐引用页面。"
+            : "These plain text and Markdown files help AI search systems, citation engines, and agents quickly understand BuilderPulse's entity facts, topics, sources, and recommended citation pages."}
+        </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {MACHINE_FILES.map(([href, label]) => (
+            <Link
+              key={href}
+              href={href}
+              className="rounded-lg bg-gray-50 px-3 py-2 font-mono text-sm font-medium text-gray-700 transition hover:bg-gray-100 dark:bg-gray-800/60 dark:text-gray-300 dark:hover:bg-gray-800"
+            >
+              {label}
+            </Link>
+          ))}
+        </div>
       </section>
     </SeoPage>
   );

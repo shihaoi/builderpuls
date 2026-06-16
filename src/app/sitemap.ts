@@ -22,6 +22,13 @@ const STATIC_PATHS = [
   "/about",
 ];
 
+const MACHINE_READABLE_PATHS = [
+  "/llms.txt",
+  "/ai-search.md",
+  "/about.md",
+  "/sources.md",
+];
+
 function entry({
   lang,
   path,
@@ -50,6 +57,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const manifest = getManifest();
   const lastModified = manifest.syncedAt ?? new Date().toISOString();
   const urls: MetadataRoute.Sitemap = [];
+
+  for (const path of MACHINE_READABLE_PATHS) {
+    urls.push({
+      url: absoluteUrl(path),
+      lastModified,
+      changeFrequency: "daily",
+      priority: 0.85,
+    });
+  }
 
   for (const lang of LANGS) {
     for (const path of STATIC_PATHS) {
