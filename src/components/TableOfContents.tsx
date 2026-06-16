@@ -6,6 +6,7 @@ import type { TocItem } from "@/lib/types";
 const FALLBACK_SCROLL_OFFSET = 152;
 const BOTTOM_LOCK_THRESHOLD = 80;
 const MIN_INDICATOR_HEIGHT = 14;
+const TOC_FOLLOW_CENTER_RATIO = 0.42;
 
 interface TableOfContentsProps {
   items: TocItem[];
@@ -32,17 +33,39 @@ function scrollToHeading(heading: HTMLElement) {
   window.scrollTo({ top, behavior: "smooth" });
 }
 
-function revealActiveLink(container: HTMLElement, link: HTMLElement) {
+function syncActiveLink(container: HTMLElement, link: HTMLElement) {
   const linkTop = link.offsetTop;
   const linkBottom = linkTop + link.offsetHeight;
+  const linkCenter = linkTop + link.offsetHeight / 2;
   const viewTop = container.scrollTop;
   const viewBottom = viewTop + container.clientHeight;
+  const comfortTop = viewTop + container.clientHeight * 0.3;
+  const comfortBottom = viewTop + container.clientHeight * 0.72;
 
-  if (linkTop < viewTop) {
-    container.scrollTop = linkTop;
-  } else if (linkBottom > viewBottom) {
-    container.scrollTop = linkBottom - container.clientHeight;
+  if (
+    linkTop >= viewTop &&
+    linkBottom <= viewBottom &&
+    linkCenter >= comfortTop &&
+    linkCenter <= comfortBottom
+  ) {
+    return;
   }
+
+  const maxScrollTop = container.scrollHeight - container.clientHeight;
+  const targetTop = Math.max(
+    0,
+    Math.min(
+      maxScrollTop,
+      linkCenter - container.clientHeight * TOC_FOLLOW_CENTER_RATIO,
+    ),
+  );
+
+  container.scrollTo({
+    top: targetTop,
+    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "auto"
+      : "smooth",
+  });
 }
 
 export function TableOfContents({ items, title }: TableOfContentsProps) {
@@ -106,10 +129,12 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
     }
 
     updateActive();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
     window.addEventListener("resize", scheduleUpdate);
     return () => {
       cancelAnimationFrame(frame);
       observer.disconnect();
+      window.removeEventListener("scroll", scheduleUpdate);
       window.removeEventListener("resize", scheduleUpdate);
     };
   }, [items]);
@@ -123,7 +148,7 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
     );
     if (!activeLink) return;
 
-    revealActiveLink(containerRef.current, activeLink);
+    syncActiveLink(containerRef.current, activeLink);
     lastSyncedId.current = activeId;
   }, [activeId]);
 
