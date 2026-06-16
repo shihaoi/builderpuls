@@ -76,7 +76,7 @@ export function Header({
             <ThemeToggle />
             <Link
               href={altHref}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-600 transition hover:bg-gray-600/5 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-200/5 dark:hover:text-gray-200 lg:hidden"
+              className="flex h-11 w-11 items-center justify-center rounded-xl text-gray-600 transition hover:bg-gray-600/5 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-200/5 dark:hover:text-gray-200 lg:hidden"
               aria-label={t.langSwitch}
               title={t.langSwitch}
             >

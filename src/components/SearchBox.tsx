@@ -144,7 +144,7 @@ export function SearchBox({ entries, lang, placeholder }: SearchBoxProps) {
       <form
         role="search"
         onSubmit={submitSearch}
-        className="flex h-9 w-full items-center rounded-xl border border-gray-200 bg-white px-3.5 text-sm text-gray-500 shadow-sm transition focus-within:border-gray-300 focus-within:text-gray-700 focus-within:ring-2 focus-within:ring-gray-900/5 dark:border-white/[0.08] dark:bg-zinc-900 dark:text-gray-400 dark:focus-within:border-white/15 dark:focus-within:text-gray-200"
+        className="flex h-11 w-full items-center rounded-xl border border-gray-200 bg-white px-3.5 text-sm text-gray-500 shadow-sm transition focus-within:border-gray-300 focus-within:text-gray-700 focus-within:ring-2 focus-within:ring-gray-900/5 dark:border-white/[0.08] dark:bg-zinc-900 dark:text-gray-400 dark:focus-within:border-white/15 dark:focus-within:text-gray-200"
       >
         <MagnifyingGlass size={16} className="mr-2 shrink-0 opacity-60" />
         <input
@@ -156,7 +156,7 @@ export function SearchBox({ entries, lang, placeholder }: SearchBoxProps) {
           }}
           onFocus={() => setOpen(true)}
           onKeyDown={handleInputKeyDown}
-          className="min-w-0 flex-1 bg-transparent text-left text-gray-700 outline-none placeholder:text-gray-500 dark:text-gray-200 dark:placeholder:text-gray-400"
+          className="h-full min-w-0 flex-1 bg-transparent text-left text-gray-700 outline-none placeholder:text-gray-500 dark:text-gray-200 dark:placeholder:text-gray-400"
           placeholder={placeholder}
           aria-label={placeholder}
           autoComplete="off"
@@ -168,7 +168,7 @@ export function SearchBox({ entries, lang, placeholder }: SearchBoxProps) {
               setQuery("");
               inputRef.current?.focus();
             }}
-            className="mr-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-200"
+            className="mr-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-200"
             aria-label={lang === "zh" ? "清空搜索" : "Clear search"}
           >
             <X size={12} weight="bold" />

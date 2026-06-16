@@ -25,7 +25,7 @@ export function PageHeader({
         <div className="relative flex min-w-0 flex-col items-start gap-2 sm:flex-row sm:items-center">
           <h1
             id="page-title"
-            className="break-all text-2xl font-bold tracking-tight text-gray-900 [overflow-wrap:anywhere] dark:text-gray-200 sm:text-3xl"
+            className="break-words text-2xl font-bold tracking-tight text-gray-900 [overflow-wrap:break-word] [word-break:normal] dark:text-gray-200 sm:text-3xl"
           >
             {title}
           </h1>

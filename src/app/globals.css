@@ -318,6 +318,12 @@ body {
   --tw-prose-invert-quote-borders: rgb(var(--primary-light));
 }
 
+.prose-bp :is(h2, h3, h4, h5, h6) a {
+  color: inherit;
+  font-weight: inherit;
+  text-decoration: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

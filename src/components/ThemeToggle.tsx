@@ -104,7 +104,7 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-600 transition hover:bg-gray-600/5 dark:text-gray-400 dark:hover:bg-gray-200/5"
+      className="flex h-11 w-11 items-center justify-center rounded-xl text-gray-600 transition hover:bg-gray-600/5 dark:text-gray-400 dark:hover:bg-gray-200/5"
       aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
     >
       {dark ? <Sun size={18} /> : <Moon size={18} />}
