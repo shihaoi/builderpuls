@@ -422,6 +422,7 @@ body {
 .archive-sidebar {
   display: none;
   width: 18rem;
+  z-index: 20;
 }
 
 @media (width >= 64rem) {
@@ -593,8 +594,8 @@ body {
 }
 
 .archive-sidebar.is-compact .calendar-sidebar-header {
-  grid-template-columns: 1.75rem 1fr 1.75rem;
-  gap: 0.25rem;
+  grid-template-columns: 1fr;
+  gap: 0;
   margin-bottom: 0;
 }
 
@@ -624,8 +625,7 @@ body {
 }
 
 .archive-sidebar.is-compact .calendar-sidebar-nav {
-  width: 1.75rem;
-  height: 1.75rem;
+  display: none;
 }
 
 .dark .calendar-sidebar {
