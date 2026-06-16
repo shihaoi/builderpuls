@@ -78,11 +78,13 @@ export function ArchiveSidebar({
                 <button
                   type="button"
                   onClick={() =>
-                    setMonthIndex((index) => Math.max(0, index - 1))
+                    setMonthIndex((index) =>
+                      Math.min(monthKeys.length - 1, index + 1),
+                    )
                   }
-                  disabled={monthIndex === 0}
+                  disabled={monthIndex >= monthKeys.length - 1}
                   className="calendar-sidebar-nav"
-                  aria-label={lang === "zh" ? "更新月份" : "Newer month"}
+                  aria-label={lang === "zh" ? "上个月" : "Previous month"}
                 >
                   <CaretLeft size={15} weight="bold" aria-hidden />
                 </button>
@@ -96,13 +98,11 @@ export function ArchiveSidebar({
                 <button
                   type="button"
                   onClick={() =>
-                    setMonthIndex((index) =>
-                      Math.min(monthKeys.length - 1, index + 1),
-                    )
+                    setMonthIndex((index) => Math.max(0, index - 1))
                   }
-                  disabled={monthIndex >= monthKeys.length - 1}
+                  disabled={monthIndex === 0}
                   className="calendar-sidebar-nav"
-                  aria-label={lang === "zh" ? "更早月份" : "Older month"}
+                  aria-label={lang === "zh" ? "下个月" : "Next month"}
                 >
                   <CaretRight size={15} weight="bold" aria-hidden />
                 </button>

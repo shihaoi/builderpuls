@@ -599,8 +599,7 @@ body {
   padding: 0;
 }
 
-.toc-tree-line,
-.toc-tree-active {
+.toc-tree-line {
   pointer-events: none;
   position: absolute;
   bottom: 0;
@@ -610,48 +609,98 @@ body {
 
 .toc-tree-line {
   width: 1px;
-  background: rgb(var(--gray-200));
+  background: color-mix(in srgb, var(--border) 78%, transparent);
+}
+
+.toc-tree-active,
+.toc-tree-dot {
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  z-index: 1;
+  transition: top 0.22s ease, height 0.22s ease, opacity 0.16s ease;
 }
 
 .toc-tree-active {
-  height: 100%;
-  width: 3rem;
-  overflow: visible;
+  width: 2px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to bottom,
+    var(--chart-2),
+    color-mix(in srgb, var(--primary) 72%, var(--chart-2))
+  );
+  transform: translateX(-0.5px);
 }
 
-.toc-tree-active path {
-  fill: none;
-  stroke: rgb(var(--primary-rgb));
-  stroke-linecap: square;
-  stroke-linejoin: miter;
-  stroke-width: 2px;
-  vector-effect: non-scaling-stroke;
+.toc-tree-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 1.5px solid var(--background);
+  border-radius: 999px;
+  background: var(--chart-2);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--chart-2) 34%, transparent);
+  transform: translate(-45%, -50%);
 }
 
 .dark .toc-tree-line {
-  background: rgb(255 255 255 / 0.12);
+  background: color-mix(in srgb, var(--border) 82%, transparent);
 }
 
-.dark .toc-tree-active path {
-  stroke: rgb(var(--primary-light-rgb));
+.dark .toc-tree-active {
+  background: linear-gradient(
+    to bottom,
+    var(--primary),
+    color-mix(in srgb, var(--primary) 58%, var(--secondary))
+  );
+}
+
+.dark .toc-tree-dot {
+  border-color: var(--background);
+  background: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
 }
 
 .toc-item {
   position: relative;
   list-style: none;
-  padding-left: 1.75rem;
+  padding-left: 1.45rem;
+}
+
+.toc-item-level-3::before {
+  content: "";
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  width: 0.6rem;
+  height: 1px;
+  background: color-mix(in srgb, var(--border) 70%, transparent);
+  transform: translateY(-50%);
+  transition: background-color 0.18s ease;
 }
 
 .toc-item-level-3 {
-  padding-left: 3.25rem;
+  padding-left: 2.6rem;
+}
+
+.toc-item-level-3.is-active::before {
+  background: color-mix(in srgb, var(--chart-2) 70%, var(--primary));
+}
+
+.dark .toc-item-level-3::before {
+  background: color-mix(in srgb, var(--border) 74%, transparent);
+}
+
+.dark .toc-item-level-3.is-active::before {
+  background: color-mix(in srgb, var(--primary) 70%, transparent);
 }
 
 .toc-link {
   display: block;
-  padding: 0.1875rem 0;
+  border-radius: var(--radius);
+  padding: 0.25rem 0;
   line-height: 1.45rem;
-  color: rgb(var(--gray-600));
-  transition: color 0.15s ease, text-shadow 0.15s ease;
+  color: color-mix(in srgb, var(--muted-foreground) 92%, transparent);
+  transition: color 0.16s ease, text-shadow 0.16s ease;
 }
 
 .toc-link-level-2 {
@@ -662,19 +711,19 @@ body {
 .toc-link-level-3 {
   font-size: 0.8125rem;
   font-weight: 400;
-  color: rgb(var(--gray-500));
+  color: color-mix(in srgb, var(--muted-foreground) 76%, transparent);
 }
 
 .toc-link:hover {
-  color: rgb(var(--gray-900));
+  color: var(--foreground);
 }
 
 .dark .toc-link {
-  color: var(--muted-foreground);
+  color: color-mix(in srgb, var(--muted-foreground) 88%, transparent);
 }
 
 .dark .toc-link-level-3 {
-  color: rgb(var(--gray-500));
+  color: color-mix(in srgb, var(--muted-foreground) 68%, transparent);
 }
 
 .dark .toc-link:hover {
@@ -682,12 +731,12 @@ body {
 }
 
 .toc-link.is-active {
-  color: rgb(var(--primary-rgb));
+  color: var(--primary);
   text-shadow: -0.15px 0 0 currentColor, 0.15px 0 0 currentColor;
 }
 
 .dark .toc-link.is-active {
-  color: rgb(var(--primary-light-rgb));
+  color: var(--primary);
 }
 
 .prose-bp {

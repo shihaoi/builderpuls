@@ -5,6 +5,7 @@ import type { TocItem } from "@/lib/types";
 
 const FALLBACK_SCROLL_OFFSET = 152;
 const BOTTOM_LOCK_THRESHOLD = 80;
+const MIN_INDICATOR_HEIGHT = 14;
 
 interface TableOfContentsProps {
   items: TocItem[];
@@ -26,7 +27,8 @@ function getScrollOffset() {
 }
 
 function scrollToHeading(heading: HTMLElement) {
-  const top = heading.getBoundingClientRect().top + window.scrollY - getScrollOffset();
+  const top =
+    heading.getBoundingClientRect().top + window.scrollY - getScrollOffset();
   window.scrollTo({ top, behavior: "smooth" });
 }
 
@@ -49,7 +51,11 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
   const itemRefs = useRef(new Map<string, HTMLLIElement>());
   const lastSyncedId = useRef<string>("");
   const [activeId, setActiveId] = useState<string>("");
-  const [activePath, setActivePath] = useState("");
+  const [activeIndicator, setActiveIndicator] = useState({
+    dotTop: 0,
+    height: 0,
+    top: 0,
+  });
 
   useEffect(() => {
     const headings = items.flatMap((item) => {
@@ -58,6 +64,7 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
     });
 
     if (headings.length === 0) return;
+    let frame = 0;
 
     function updateActive() {
       const scrollOffset = getScrollOffset();
@@ -84,9 +91,27 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
       setActiveId((prev) => (prev === current ? prev : current));
     }
 
+    function scheduleUpdate() {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(updateActive);
+    }
+
+    const observer = new IntersectionObserver(scheduleUpdate, {
+      rootMargin: `-${getScrollOffset()}px 0px -65% 0px`,
+      threshold: [0, 1],
+    });
+
+    for (const heading of headings) {
+      observer.observe(heading.element);
+    }
+
     updateActive();
-    window.addEventListener("scroll", updateActive, { passive: true });
-    return () => window.removeEventListener("scroll", updateActive);
+    window.addEventListener("resize", scheduleUpdate);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("resize", scheduleUpdate);
+    };
   }, [items]);
 
   useEffect(() => {
@@ -105,11 +130,11 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
   useEffect(() => {
     const list = listRef.current;
     if (!activeId || !list) {
-      setActivePath("");
+      setActiveIndicator({ dotTop: 0, height: 0, top: 0 });
       return;
     }
 
-    function updateActivePath() {
+    function updateActiveIndicator() {
       const list = listRef.current;
       const activeItem = itemRefs.current.get(activeId);
       const activeIndex = items.findIndex((item) => item.id === activeId);
@@ -118,13 +143,15 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
       const activeRect = activeItem.getBoundingClientRect();
       const listRect = list.getBoundingClientRect();
       const active = items[activeIndex];
-      const mainX = 1;
-      const branchX = 22;
       const activeTop = activeRect.top - listRect.top;
       const activeCenter = activeTop + activeRect.height / 2;
 
       if (active.level === 2) {
-        setActivePath(`M ${mainX} ${activeTop + 3} V ${activeTop + activeRect.height - 3}`);
+        setActiveIndicator({
+          dotTop: activeCenter,
+          height: Math.max(MIN_INDICATOR_HEIGHT, activeRect.height - 8),
+          top: activeTop + 4,
+        });
         return;
       }
 
@@ -135,23 +162,29 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
       const parentItem = parent ? itemRefs.current.get(parent.id) : null;
 
       if (!parentItem) {
-        setActivePath(`M ${mainX} ${activeCenter - 12} L ${branchX} ${activeCenter} V ${activeCenter + 12}`);
+        setActiveIndicator({
+          dotTop: activeCenter,
+          height: MIN_INDICATOR_HEIGHT,
+          top: activeCenter - MIN_INDICATOR_HEIGHT / 2,
+        });
         return;
       }
 
       const parentRect = parentItem.getBoundingClientRect();
       const parentTop = parentRect.top - listRect.top;
       const parentCenter = parentTop + parentRect.height / 2;
-      const bendY = Math.min(parentCenter + 19, activeCenter - 12);
+      const top = Math.min(parentCenter, activeCenter);
 
-      setActivePath(
-        `M ${mainX} ${parentCenter - 14} V ${bendY} L ${branchX} ${activeCenter - 12} V ${activeCenter + 12}`,
-      );
+      setActiveIndicator({
+        dotTop: activeCenter,
+        height: Math.max(MIN_INDICATOR_HEIGHT, Math.abs(activeCenter - top)),
+        top,
+      });
     }
 
-    updateActivePath();
-    window.addEventListener("resize", updateActivePath);
-    return () => window.removeEventListener("resize", updateActivePath);
+    updateActiveIndicator();
+    window.addEventListener("resize", updateActiveIndicator);
+    return () => window.removeEventListener("resize", updateActiveIndicator);
   }, [activeId, items]);
 
   if (items.length === 0) return null;
@@ -184,9 +217,23 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
           </h2>
           <div className="toc-tree relative mt-4">
             <span className="toc-tree-line" aria-hidden />
-            <svg className="toc-tree-active" aria-hidden>
-              <path d={activePath} />
-            </svg>
+            <span
+              className="toc-tree-active"
+              style={{
+                height: activeIndicator.height,
+                opacity: activeIndicator.height ? 1 : 0,
+                top: activeIndicator.top,
+              }}
+              aria-hidden
+            />
+            <span
+              className="toc-tree-dot"
+              style={{
+                opacity: activeIndicator.height ? 1 : 0,
+                top: activeIndicator.dotTop,
+              }}
+              aria-hidden
+            />
             <ul ref={listRef} className="toc space-y-0.5">
               {items.map((item) => (
                 <li
