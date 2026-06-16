@@ -421,7 +421,7 @@ body {
 
 .archive-sidebar {
   display: none;
-  width: 18rem;
+  width: 22rem;
   z-index: 20;
 }
 
@@ -437,6 +437,10 @@ body {
   color: rgb(var(--gray-700));
   transition: background-color 0.2s ease, border-color 0.2s ease,
     box-shadow 0.2s ease, padding 0.2s ease, width 0.2s ease;
+}
+
+.archive-sidebar:not(.is-compact) #navigation-items {
+  padding-left: 3rem;
 }
 
 .calendar-sidebar-header {
@@ -580,7 +584,7 @@ body {
 .archive-sidebar.is-compact #navigation-items {
   pointer-events: auto;
   width: 11.25rem;
-  padding-left: 1rem;
+  padding-left: 3rem;
   padding-right: 0;
 }
 
@@ -681,61 +685,95 @@ body {
 .toc {
   margin: 0;
   padding: 0;
-}
-
-.toc-tree-line {
-  pointer-events: none;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  top: 0;
-}
-
-.toc-tree-line {
-  width: 1px;
-  background: color-mix(in srgb, var(--border) 78%, transparent);
-}
-
-.toc-tree-active,
-.toc-tree-dot {
-  pointer-events: none;
-  position: absolute;
-  left: 0;
+  position: relative;
   z-index: 1;
-  transition: top 0.22s ease, height 0.22s ease, opacity 0.16s ease;
 }
 
-.toc-tree-active {
-  width: 2px;
-  border-radius: 999px;
-  background: linear-gradient(
+.toc-scroll-area {
+  --toc-scroll-mask: linear-gradient(
     to bottom,
-    var(--chart-2),
-    color-mix(in srgb, var(--primary) 72%, var(--chart-2))
+    transparent,
+    #000 16px,
+    #000 calc(100% - 16px),
+    transparent
   );
-  transform: translateX(-0.5px);
+
+  margin-top: 0.25rem;
+  -webkit-mask-image: var(--toc-scroll-mask);
+  mask-image: var(--toc-scroll-mask);
+  padding-bottom: 0.75rem;
+  padding-top: 0.75rem;
+}
+
+.toc-tree-track {
+  inset-inline-start: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  transform-origin: center;
+  z-index: 0;
+}
+
+.toc-tree-svg {
+  height: 100%;
+  inset: 0 auto auto 0;
+  overflow: visible;
+  pointer-events: none;
+  position: absolute;
+  transition: clip-path 0.24s ease;
+  width: 100%;
+}
+
+.toc-tree-svg-active {
+  clip-path: polygon(
+    0 var(--toc-track-top, 0),
+    100% var(--toc-track-top, 0),
+    100% var(--toc-track-bottom, 0),
+    0 var(--toc-track-bottom, 0)
+  );
+}
+
+.toc-tree-path,
+.toc-tree-path-active {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1px;
+}
+
+.toc-tree-path {
+  stroke: color-mix(in srgb, var(--border) 78%, transparent);
+}
+
+.toc-tree-path-active {
+  stroke: var(--primary);
+  stroke-width: 1.5px;
 }
 
 .toc-tree-dot {
-  width: 0.5rem;
-  height: 0.5rem;
+  background: var(--primary);
   border: 1.5px solid var(--background);
   border-radius: 999px;
-  background: var(--chart-2);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--chart-2) 34%, transparent);
-  transform: translate(-45%, -50%);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
+  height: 0.5rem;
+  inset: 0 auto auto 0;
+  offset-anchor: center;
+  offset-rotate: 0deg;
+  pointer-events: none;
+  position: absolute;
+  width: 0.5rem;
+  z-index: 2;
+  transition:
+    offset-distance 0.24s ease,
+    opacity 0.16s ease;
 }
 
-.dark .toc-tree-line {
-  background: color-mix(in srgb, var(--border) 82%, transparent);
+.dark .toc-tree-path {
+  stroke: color-mix(in srgb, var(--border) 82%, transparent);
 }
 
-.dark .toc-tree-active {
-  background: linear-gradient(
-    to bottom,
-    var(--primary),
-    color-mix(in srgb, var(--primary) 58%, var(--secondary))
-  );
+.dark .toc-tree-path-active {
+  stroke: var(--primary);
 }
 
 .dark .toc-tree-dot {

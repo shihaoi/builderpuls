@@ -22,6 +22,8 @@ const STATIC_PATHS = [
   "/methodology",
   "/sources",
   "/about",
+  "/privacy",
+  "/terms",
 ];
 
 const MACHINE_READABLE_PATHS = [

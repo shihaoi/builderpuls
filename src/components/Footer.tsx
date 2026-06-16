@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { formatSyncedAt } from "@/lib/format";
 import type { Lang } from "@/lib/types";
 import { UI } from "@/lib/i18n";
 
@@ -9,28 +8,12 @@ interface FooterProps {
   syncedAt: string | null;
 }
 
-export function Footer({ lang, syncedAt }: FooterProps) {
+export function Footer({ lang }: FooterProps) {
   const t = UI[lang];
-  const syncedLabel = syncedAt ? formatSyncedAt(syncedAt, lang) : "-";
 
   const columns = [
     {
-      title: t.footerSource,
-      links: [
-        {
-          label: "BuilderPulse/BuilderPulse",
-          href: "https://github.com/BuilderPulse/BuilderPulse",
-          external: true,
-        },
-        {
-          label: t.footerReaderRepo,
-          href: "https://github.com/shihaoi/builderpuls",
-          external: true,
-        },
-      ],
-    },
-    {
-      title: t.footerReader,
+      title: lang === "zh" ? "探索" : "Explore",
       links: [
         { label: t.tabRead, href: `/${lang}`, external: false },
         { label: t.tabArchive, href: `/${lang}/archive`, external: false },
@@ -41,6 +24,11 @@ export function Footer({ lang, syncedAt }: FooterProps) {
           external: false,
         },
         { label: t.tabFor, href: `/${lang}/for`, external: false },
+      ],
+    },
+    {
+      title: lang === "zh" ? "关于" : "About",
+      links: [
         {
           label: t.tabMethodology,
           href: `/${lang}/methodology`,
@@ -52,15 +40,10 @@ export function Footer({ lang, syncedAt }: FooterProps) {
           external: false,
         },
         {
-          label: lang === "zh" ? "关于" : "About",
+          label: lang === "zh" ? "关于本站" : "About BuilderPulse",
           href: `/${lang}/about`,
           external: false,
         },
-      ],
-    },
-    {
-      title: t.footerAuthor,
-      links: [
         {
           label: t.ctaAuthor,
           href: "https://github.com/liuxiaopai-ai",
@@ -74,11 +57,33 @@ export function Footer({ lang, syncedAt }: FooterProps) {
       ],
     },
     {
-      title: t.footerMeta,
+      title: lang === "zh" ? "数据与 AI" : "Data & AI",
       links: [
-        { label: `${t.syncedAt}: ${syncedLabel}`, href: "#", external: false },
-        { label: "llms.txt", href: "/llms.txt", external: false },
-        { label: "ai-search.md", href: "/ai-search.md", external: false },
+        {
+          label: lang === "zh" ? "内容仓库" : "Content repo",
+          href: "https://github.com/BuilderPulse/BuilderPulse",
+          external: true,
+        },
+        {
+          label: lang === "zh" ? "阅读站仓库" : "Reader repo",
+          href: "https://github.com/shihaoi/builderpuls",
+          external: true,
+        },
+      ],
+    },
+    {
+      title: lang === "zh" ? "法务" : "Legal",
+      links: [
+        {
+          label: lang === "zh" ? "隐私说明" : "Privacy Notice",
+          href: `/${lang}/privacy`,
+          external: false,
+        },
+        {
+          label: lang === "zh" ? "用户协议" : "Terms of Use",
+          href: `/${lang}/terms`,
+          external: false,
+        },
         {
           label: lang === "zh" ? "English" : "简体中文",
           href: lang === "zh" ? "/en" : "/zh",
