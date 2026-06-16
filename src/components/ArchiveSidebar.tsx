@@ -37,6 +37,7 @@ export function ArchiveSidebar({
   const [monthIndex, setMonthIndex] = useState(() =>
     Math.max(0, monthKeys.indexOf(activeMonthKey)),
   );
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
   const visibleGroup = groups[monthIndex] ?? groups[0];
   const visibleMonth =
     visibleGroup?.reports[0]?.date.slice(0, 7) ?? activeMonthKey;
@@ -59,12 +60,25 @@ export function ArchiveSidebar({
     ref.current?.scrollTo({ top: 0 });
   }, [activeDate, ref]);
 
+  useEffect(() => {
+    const footer = document.getElementById("site-footer");
+    if (!footer || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsFooterVisible(entry.isIntersecting),
+      { threshold: 0.01 },
+    );
+
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, []);
+
   if (!visibleGroup) return null;
 
   return (
     <nav
       aria-label={title}
-      className="fixed bottom-0 right-auto z-20 hidden w-[18rem] lg:block"
+      className={`archive-sidebar fixed bottom-0 right-auto z-20${isFooterVisible ? " is-compact" : ""}`}
       style={{ top: "var(--sidebar-top)" }}
     >
       <div
@@ -93,6 +107,9 @@ export function ArchiveSidebar({
                   <p className="calendar-sidebar-count">
                     {visibleGroup.reports.length}{" "}
                     {lang === "zh" ? "篇日报" : "briefs"}
+                  </p>
+                  <p className="calendar-sidebar-compact-date">
+                    {formatDisplayDate(activeDate, lang)}
                   </p>
                 </div>
                 <button

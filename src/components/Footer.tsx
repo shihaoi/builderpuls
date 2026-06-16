@@ -89,7 +89,10 @@ export function Footer({ lang, syncedAt }: FooterProps) {
   ];
 
   return (
-    <footer className="mx-auto mt-auto w-full max-w-[96rem] border-t border-gray-100 px-4 py-16 dark:border-gray-800/50 sm:px-6 lg:px-12">
+    <footer
+      id="site-footer"
+      className="mx-auto mt-auto w-full max-w-[96rem] border-t border-gray-100 px-4 py-16 dark:border-gray-800/50 sm:px-6 lg:px-12"
+    >
       <div className="flex items-center gap-2.5">
         <Image
           src="/logo.svg"
