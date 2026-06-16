@@ -307,11 +307,21 @@ body {
 
 .toc-link {
   display: block;
-  padding: 0.25rem 0;
-  font-size: 0.875rem;
-  line-height: 1.5rem;
+  padding: 0.1875rem 0;
+  line-height: 1.45rem;
   color: rgb(var(--gray-600));
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition: color 0.15s ease, text-shadow 0.15s ease;
+}
+
+.toc-link-level-2 {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.toc-link-level-3 {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: rgb(var(--gray-500));
 }
 
 .toc-link:hover {
@@ -320,6 +330,10 @@ body {
 
 .dark .toc-link {
   color: rgb(161 161 170);
+}
+
+.dark .toc-link-level-3 {
+  color: rgb(113 113 122);
 }
 
 .dark .toc-link:hover {

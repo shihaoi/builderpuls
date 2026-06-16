@@ -144,7 +144,7 @@ export function SearchBox({ entries, lang, placeholder }: SearchBoxProps) {
       <form
         role="search"
         onSubmit={submitSearch}
-        className="flex h-11 w-full items-center rounded-xl border border-gray-200 bg-white px-3.5 text-sm text-gray-500 shadow-sm transition focus-within:border-gray-300 focus-within:text-gray-700 focus-within:ring-2 focus-within:ring-gray-900/5 dark:border-white/[0.08] dark:bg-zinc-900 dark:text-gray-400 dark:focus-within:border-white/15 dark:focus-within:text-gray-200"
+        className="flex h-11 w-full items-center rounded-xl border border-gray-200 bg-white px-3.5 text-sm text-gray-500 transition focus-within:border-gray-300 focus-within:text-gray-700 focus-within:ring-2 focus-within:ring-gray-900/5 dark:border-white/[0.08] dark:bg-zinc-900 dark:text-gray-400 dark:focus-within:border-white/15 dark:focus-within:text-gray-200"
       >
         <MagnifyingGlass size={16} className="mr-2 shrink-0 opacity-60" />
         <input

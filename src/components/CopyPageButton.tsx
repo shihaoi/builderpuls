@@ -23,13 +23,13 @@ export function CopyPageButton({ label }: CopyPageButtonProps) {
   return (
     <div
       id="page-context-menu"
-      className="inline-flex items-center overflow-hidden rounded-xl border border-gray-200 dark:border-white/[0.07]"
+      className="inline-flex items-center overflow-hidden rounded-xl border border-gray-200 bg-[var(--color-background)] dark:border-white/[0.07]"
     >
       <button
         type="button"
         id="page-context-menu-button"
         onClick={handleCopy}
-        className="inline-flex items-center gap-2 border-r-0 bg-background px-3 py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-600/5 dark:bg-background dark:text-gray-300 dark:hover:bg-gray-200/5"
+        className="inline-flex items-center gap-2 border-r-0 bg-transparent px-3 py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-600/5 dark:text-gray-300 dark:hover:bg-gray-200/5"
         aria-label={label}
       >
         {copied ? <Check size={16} weight="bold" /> : <Copy size={16} />}
@@ -37,7 +37,7 @@ export function CopyPageButton({ label }: CopyPageButtonProps) {
       </button>
       <button
         type="button"
-        className="inline-flex items-center border-l border-gray-200 bg-background px-2 py-1.5 text-gray-500 transition hover:bg-gray-600/5 dark:border-white/[0.07] dark:bg-background dark:text-gray-400 dark:hover:bg-gray-200/5"
+        className="inline-flex items-center border-l border-gray-200 bg-transparent px-2 py-1.5 text-gray-500 transition hover:bg-gray-600/5 dark:border-white/[0.07] dark:text-gray-400 dark:hover:bg-gray-200/5"
         aria-hidden
         tabIndex={-1}
       >

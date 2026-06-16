@@ -323,11 +323,13 @@ export function extractToc(markdown: string): TocItem[] {
     const h3 = line.match(/^### (.+)$/);
 
     if (h2) {
-      const text = h2[1].replace(/[🔗🔍📝🎯]/gu, "").trim();
-      items.push({ id: slugger.slug(text), text, level: 2 });
+      const rawText = h2[1].trim();
+      const text = normalizeHeading(rawText);
+      items.push({ id: slugger.slug(rawText), text, level: 2 });
     } else if (h3) {
-      const text = h3[1].trim();
-      items.push({ id: slugger.slug(text), text, level: 3 });
+      const rawText = h3[1].trim();
+      const text = normalizeHeading(rawText);
+      items.push({ id: slugger.slug(rawText), text, level: 3 });
     }
   }
 
@@ -488,11 +490,17 @@ export function parseReportSections(
 }
 
 export function sectionsToToc(sections: ReportSection[]): TocItem[] {
-  return sections.map((section) => ({
-    id: section.id,
-    text: section.title,
-    level: 2 as const,
-  }));
+  return sections.flatMap((section) => [
+    {
+      id: section.id,
+      text: section.title,
+      level: 2 as const,
+    },
+    ...extractToc(section.content).map((item) => ({
+      ...item,
+      level: 3 as const,
+    })),
+  ]);
 }
 
 export function groupReportsByMonth(
