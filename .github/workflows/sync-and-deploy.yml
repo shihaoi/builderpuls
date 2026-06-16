@@ -2,8 +2,8 @@ name: Sync & Deploy
 
 on:
   schedule:
-    # BuilderPulse updates daily around 14:00 Shanghai — sync at 07:00 & 15:00 UTC
-    - cron: "0 7,15 * * *"
+    # BuilderPulse updates ~09:00 & ~14:00 Shanghai — sync at 10:00 & 15:00 Shanghai (02:00 & 07:00 UTC)
+    - cron: "0 2,7 * * *"
   workflow_dispatch:
   push:
     branches: [main]
