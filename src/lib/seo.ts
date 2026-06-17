@@ -23,6 +23,8 @@ export function languageAlternates(path = ""): Record<string, string> {
   };
 }
 
+const DEFAULT_OG_IMAGE = absoluteUrl("/og-image.png");
+
 const DESCRIPTION_LIMIT: Record<Lang, number> = {
   en: 145,
   zh: 90,
@@ -83,11 +85,20 @@ export function pageMetadata({
       siteName: "BuilderPulse",
       locale: lang === "zh" ? "zh_CN" : "en_US",
       alternateLocale: lang === "zh" ? ["en_US"] : ["zh_CN"],
+      images: [
+        {
+          url: DEFAULT_OG_IMAGE,
+          width: 1200,
+          height: 630,
+          alt: "BuilderPulse daily opportunity brief",
+        },
+      ],
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title,
       description: metaDescription,
+      images: [DEFAULT_OG_IMAGE],
     },
   };
 }
