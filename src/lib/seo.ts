@@ -23,6 +23,35 @@ export function languageAlternates(path = ""): Record<string, string> {
   };
 }
 
+const DESCRIPTION_LIMIT: Record<Lang, number> = {
+  en: 145,
+  zh: 90,
+};
+
+const DESCRIPTION_FALLBACK: Record<Lang, string> = {
+  en: "BuilderPulse is a daily opportunity brief for indie hackers and MicroSaaS founders, tracking AI, developer tools, open-source, and builder market signals.",
+  zh: "BuilderPulse 是给独立开发者和 MicroSaaS 创始人的每日机会简报，追踪 AI、开发者工具、开源和构建者市场信号。",
+};
+
+function cleanDescription(description: string, lang: Lang): string {
+  const clean = description
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/[*_~>#]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const text = clean || DESCRIPTION_FALLBACK[lang];
+  const limit = DESCRIPTION_LIMIT[lang];
+  const chars = Array.from(text);
+
+  if (chars.length <= limit) return text;
+
+  return `${chars
+    .slice(0, limit - 3)
+    .join("")
+    .replace(/[\s,.;:，。；：、-]+$/u, "")}...`;
+}
+
 export function pageMetadata({
   lang,
   path = "",
@@ -37,17 +66,18 @@ export function pageMetadata({
   type?: "website" | "article";
 }): Metadata {
   const canonical = absoluteUrl(localizedPath(lang, path));
+  const metaDescription = cleanDescription(description, lang);
 
   return {
     title,
-    description,
+    description: metaDescription,
     alternates: {
       canonical,
       languages: languageAlternates(path),
     },
     openGraph: {
       title,
-      description,
+      description: metaDescription,
       url: canonical,
       type,
       siteName: "BuilderPulse",
@@ -57,7 +87,7 @@ export function pageMetadata({
     twitter: {
       card: "summary",
       title,
-      description,
+      description: metaDescription,
     },
   };
 }
