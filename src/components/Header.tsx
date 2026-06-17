@@ -60,7 +60,7 @@ export function Header({
       className="peer fixed top-0 z-30 w-full lg:sticky"
       style={{ ["--nav-height" as string]: "7rem" }}
     >
-      <div className="absolute h-full w-full flex-none border-b border-border/70 bg-background/95 backdrop-blur transition-colors duration-500 dark:border-border/80 dark:bg-background/75" />
+      <div className="absolute h-full w-full flex-none border-b border-border/70 bg-background/95 backdrop-blur dark:border-border/80 dark:bg-background/75" />
 
       <div className="relative mx-auto max-w-[96rem]">
         <div className="relative mx-4 flex h-16 min-w-0 items-center gap-x-4 border-b border-gray-500/5 dark:border-gray-300/[0.06] lg:mx-0 lg:px-12">
