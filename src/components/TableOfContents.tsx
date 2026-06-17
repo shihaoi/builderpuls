@@ -8,6 +8,15 @@ const BOTTOM_LOCK_THRESHOLD = 80;
 const TOC_LINE_BASE_OFFSET = 8;
 const TOC_LINE_LEVEL_OFFSET = 20;
 const TOC_FOLLOW_CENTER_RATIO = 0.42;
+const TOC_COMFORT_TOP_RATIO = 0.3;
+const TOC_COMFORT_BOTTOM_RATIO = 0.72;
+const TARGET_LOCK_THRESHOLD = 6;
+const TARGET_LOCK_TIMEOUT = 1400;
+
+interface HeadingEntry {
+  element: HTMLElement;
+  id: string;
+}
 
 interface TableOfContentsProps {
   items: TocItem[];
@@ -68,16 +77,49 @@ function scrollToHeading(heading: HTMLElement) {
   window.scrollTo({ top, behavior: "smooth" });
 }
 
-function syncActiveLink(container: HTMLElement, link: HTMLElement) {
-  const linkTop = link.offsetTop;
-  const linkBottom = linkTop + link.offsetHeight;
-  const linkCenter = linkTop + link.offsetHeight / 2;
+function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function getReadingProgress(headings: HeadingEntry[], scrollOffset: number) {
+  if (headings.length < 2) return 0;
+
+  const firstTop =
+    headings[0].element.getBoundingClientRect().top + window.scrollY;
+  const lastTop =
+    headings[headings.length - 1].element.getBoundingClientRect().top +
+    window.scrollY;
+  const range = lastTop - firstTop;
+
+  if (range <= 0) return 0;
+
+  return clamp((window.scrollY + scrollOffset - firstTop) / range, 0, 1);
+}
+
+function syncActiveLink(
+  container: HTMLElement,
+  link: HTMLElement,
+  options: {
+    behavior?: ScrollBehavior;
+    progress?: number;
+  } = {},
+) {
+  const containerRect = container.getBoundingClientRect();
+  const linkRect = link.getBoundingClientRect();
+  const linkTop = linkRect.top - containerRect.top + container.scrollTop;
+  const linkBottom = linkTop + linkRect.height;
+  const linkCenter = linkTop + linkRect.height / 2;
   const viewTop = container.scrollTop;
   const viewBottom = viewTop + container.clientHeight;
-  const comfortTop = viewTop + container.clientHeight * 0.3;
-  const comfortBottom = viewTop + container.clientHeight * 0.72;
+  const comfortTop = viewTop + container.clientHeight * TOC_COMFORT_TOP_RATIO;
+  const comfortBottom =
+    viewTop + container.clientHeight * TOC_COMFORT_BOTTOM_RATIO;
+  const maxScrollTop = container.scrollHeight - container.clientHeight;
+
+  if (maxScrollTop <= 0) return;
 
   if (
+    options.progress === undefined &&
     linkTop >= viewTop &&
     linkBottom <= viewBottom &&
     linkCenter >= comfortTop &&
@@ -86,20 +128,36 @@ function syncActiveLink(container: HTMLElement, link: HTMLElement) {
     return;
   }
 
-  const maxScrollTop = container.scrollHeight - container.clientHeight;
-  const targetTop = Math.max(
+  const centeredTop =
+    linkCenter - container.clientHeight * TOC_FOLLOW_CENTER_RATIO;
+  const progressTop =
+    options.progress === undefined
+      ? centeredTop
+      : maxScrollTop * options.progress;
+  const minVisibleTop = clamp(
+    linkCenter - container.clientHeight * TOC_COMFORT_BOTTOM_RATIO,
     0,
-    Math.min(
-      maxScrollTop,
-      linkCenter - container.clientHeight * TOC_FOLLOW_CENTER_RATIO,
-    ),
+    maxScrollTop,
   );
+  const maxVisibleTop = clamp(
+    linkCenter - container.clientHeight * TOC_COMFORT_TOP_RATIO,
+    0,
+    maxScrollTop,
+  );
+  const targetTop =
+    minVisibleTop <= maxVisibleTop
+      ? clamp(progressTop, minVisibleTop, maxVisibleTop)
+      : clamp(centeredTop, 0, maxScrollTop);
+
+  if (Math.abs(container.scrollTop - targetTop) < 1) return;
 
   container.scrollTo({
     top: targetTop,
-    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      ? "auto"
-      : "smooth",
+    behavior:
+      options.behavior ??
+      (window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth"),
   });
 }
 
@@ -224,6 +282,9 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
   const listRef = useRef<HTMLUListElement>(null);
   const itemRefs = useRef(new Map<string, HTMLLIElement>());
   const lastSyncedId = useRef<string>("");
+  const pinnedTocId = useRef<string | null>(null);
+  const navigationTargetId = useRef<string | null>(null);
+  const navigationTargetTimeout = useRef<number | null>(null);
   const previousActiveRange = useRef<ActiveRange | null>(null);
   const [activeId, setActiveId] = useState<string>("");
   const [activeTrack, setActiveTrack] =
@@ -261,6 +322,51 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
         }
       }
 
+      const navigationTarget = navigationTargetId.current;
+      if (navigationTarget) {
+        const targetHeading = headings.find(
+          (heading) => heading.id === navigationTarget,
+        );
+
+        if (targetHeading) {
+          const targetTop = targetHeading.element.getBoundingClientRect().top;
+
+          if (Math.abs(targetTop - scrollOffset) <= TARGET_LOCK_THRESHOLD) {
+            navigationTargetId.current = null;
+          } else {
+            current = navigationTarget;
+          }
+        } else {
+          navigationTargetId.current = null;
+        }
+      }
+
+      if (pinnedTocId.current && pinnedTocId.current !== current) {
+        pinnedTocId.current = null;
+      }
+
+      const container = containerRef.current;
+      const activeLink = container?.querySelector<HTMLElement>(
+        `a[href="#${CSS.escape(current)}"]`,
+      );
+
+      if (container && activeLink) {
+        const isNavigationTarget = navigationTargetId.current === current;
+        const isPinned = pinnedTocId.current === current;
+        syncActiveLink(
+          container,
+          activeLink,
+          isNavigationTarget || isPinned
+            ? { behavior: "auto" }
+            : {
+                behavior: "auto",
+                progress: nearBottom
+                  ? 1
+                  : getReadingProgress(headings, scrollOffset),
+              },
+        );
+      }
+
       setActiveId((prev) => (prev === current ? prev : current));
     }
 
@@ -284,6 +390,10 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
     return () => {
       cancelAnimationFrame(frame);
       observer.disconnect();
+      if (navigationTargetTimeout.current !== null) {
+        window.clearTimeout(navigationTargetTimeout.current);
+        navigationTargetTimeout.current = null;
+      }
       window.removeEventListener("scroll", scheduleUpdate);
       window.removeEventListener("resize", scheduleUpdate);
     };
@@ -479,6 +589,30 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
                         e.preventDefault();
                         const heading = document.getElementById(item.id);
                         if (!heading) return;
+
+                        navigationTargetId.current = item.id;
+                        pinnedTocId.current = item.id;
+                        if (navigationTargetTimeout.current !== null) {
+                          window.clearTimeout(navigationTargetTimeout.current);
+                        }
+                        navigationTargetTimeout.current = window.setTimeout(
+                          () => {
+                            navigationTargetId.current = null;
+                            navigationTargetTimeout.current = null;
+                          },
+                          TARGET_LOCK_TIMEOUT,
+                        );
+
+                        const activeLink =
+                          containerRef.current?.querySelector<HTMLElement>(
+                            `a[href="#${CSS.escape(item.id)}"]`,
+                          );
+                        if (containerRef.current && activeLink) {
+                          syncActiveLink(containerRef.current, activeLink, {
+                            behavior: "auto",
+                          });
+                          lastSyncedId.current = item.id;
+                        }
 
                         setActiveId(item.id);
                         scrollToHeading(heading);
