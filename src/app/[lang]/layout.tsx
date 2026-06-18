@@ -76,7 +76,7 @@ export default async function LangLayout({
         suppressHydrationWarning
       >
         <Script id="theme-init" strategy="beforeInteractive">
-          {`(function(){try{var t=localStorage.getItem('theme');var d=t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.classList.toggle('dark',d);document.documentElement.classList.toggle('light',!d)}catch(e){}})()`}
+          {`(function(){try{Array.prototype.slice.call(document.documentElement.attributes).forEach(function(a){if(a.name.indexOf('trancy-')===0)document.documentElement.removeAttribute(a.name)});var t=localStorage.getItem('theme');var d=t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.classList.toggle('dark',d);document.documentElement.classList.toggle('light',!d)}catch(e){}})()`}
         </Script>
         {children}
         <Script id="microsoft-clarity" strategy="afterInteractive">
