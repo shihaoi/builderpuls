@@ -10,13 +10,70 @@ interface CopyPageButtonProps {
 export function CopyPageButton({ label }: CopyPageButtonProps) {
   const [copied, setCopied] = useState(false);
 
-  async function handleCopy() {
+  function copyWithSelection(text: string) {
+    const textarea = document.createElement("textarea");
+    const selection = document.getSelection();
+    const selectedRange =
+      selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+
+    textarea.value = text;
+    textarea.id = "copy-page-url-buffer";
+    textarea.name = "copy-page-url-buffer";
+    textarea.setAttribute("readonly", "");
+    textarea.setAttribute("aria-hidden", "true");
+    textarea.style.position = "fixed";
+    textarea.style.inset = "0 auto auto 0";
+    textarea.style.opacity = "0";
+    textarea.style.pointerEvents = "none";
+
+    document.body.appendChild(textarea);
+    textarea.select();
+    textarea.setSelectionRange(0, text.length);
+
+    const ok = document.execCommand("copy");
+    document.body.removeChild(textarea);
+
+    if (selection && selectedRange) {
+      selection.removeAllRanges();
+      selection.addRange(selectedRange);
+    }
+
+    return ok;
+  }
+
+  function markCopied() {
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 2000);
+  }
+
+  async function hasClipboardGrant() {
+    if (!navigator.permissions?.query) return false;
+
     try {
-      await navigator.clipboard.writeText(window.location.href);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
+      const status = await navigator.permissions.query({
+        name: "clipboard-write" as PermissionName,
+      });
+      return status.state === "granted";
     } catch {
-      /* ignore */
+      return false;
+    }
+  }
+
+  async function handleCopy() {
+    const url = window.location.href;
+
+    if (copyWithSelection(url)) {
+      markCopied();
+      return;
+    }
+
+    if (navigator.clipboard?.writeText && (await hasClipboardGrant())) {
+      try {
+        await navigator.clipboard.writeText(url);
+        markCopied();
+      } catch {
+        /* Permission can change between the query and the write. */
+      }
     }
   }
 

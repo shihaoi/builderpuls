@@ -148,6 +148,8 @@ export function SearchBox({ entries, lang, placeholder }: SearchBoxProps) {
       >
         <MagnifyingGlass size={16} className="mr-2 shrink-0 opacity-60" />
         <input
+          id="site-search-input"
+          name="q"
           ref={inputRef}
           value={query}
           onChange={(event) => {

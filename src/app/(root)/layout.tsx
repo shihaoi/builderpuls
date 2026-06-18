@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import Script from "next/script";
+import { ThemeBootstrap } from "@/components/BrowserEffects";
 import "../globals.css";
 
 const inter = Inter({
@@ -38,9 +38,7 @@ export default function RootLandingLayout({
         className="min-h-full bg-background font-sans text-base antialiased"
         suppressHydrationWarning
       >
-        <Script id="root-theme-init" strategy="beforeInteractive">
-          {`(function(){try{Array.prototype.slice.call(document.documentElement.attributes).forEach(function(a){if(a.name.indexOf('trancy-')===0)document.documentElement.removeAttribute(a.name)});var t=localStorage.getItem('theme');var d=t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.classList.toggle('dark',d);document.documentElement.classList.toggle('light',!d)}catch(e){}})()`}
-        </Script>
+        <ThemeBootstrap />
         {children}
       </body>
     </html>
