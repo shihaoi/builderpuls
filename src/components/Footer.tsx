@@ -44,16 +44,6 @@ export function Footer({ lang }: FooterProps) {
           href: `/${lang}/about`,
           external: false,
         },
-        {
-          label: t.ctaAuthor,
-          href: "https://github.com/liuxiaopai-ai",
-          external: true,
-        },
-        {
-          label: "X",
-          href: "https://x.com/liuxiaopai_ai",
-          external: true,
-        },
       ],
     },
     {
@@ -83,54 +73,56 @@ export function Footer({ lang }: FooterProps) {
       id="site-footer"
       className="mx-auto mt-auto w-full max-w-[96rem] border-t border-gray-100 px-4 py-16 dark:border-gray-800/50 sm:px-6 lg:px-12"
     >
-      <div className="flex items-center gap-2.5">
-        <Image
-          src="/logo.svg"
-          alt=""
-          width={24}
-          height={24}
-          className="h-6 w-6 shrink-0"
-        />
-        <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-          {t.siteName}
-        </span>
-      </div>
+      <div className="mx-auto w-full max-w-4xl">
+        <div className="flex items-center gap-2.5">
+          <Image
+            src="/logo.svg"
+            alt=""
+            width={24}
+            height={24}
+            className="h-6 w-6 shrink-0"
+          />
+          <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            {t.siteName}
+          </span>
+        </div>
 
-      <div className="mt-10 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3">
-        {columns.map((column) => (
-          <div key={column.title}>
-            <p className="text-sm font-semibold text-gray-900 dark:text-gray-200">
-              {column.title}
-            </p>
-            <ul className="mt-4 space-y-3">
-              {column.links.map((link) => (
-                <li key={link.label}>
-                  {link.external ? (
-                    <a
-                      href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-gray-600 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
-                    >
-                      {link.label}
-                    </a>
-                  ) : link.href === "#" ? (
-                    <span className="font-mono text-xs text-gray-500 dark:text-gray-400">
-                      {link.label}
-                    </span>
-                  ) : (
-                    <Link
-                      href={link.href}
-                      className="text-sm text-gray-600 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
-                    >
-                      {link.label}
-                    </Link>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+        <div className="mt-10 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3">
+          {columns.map((column) => (
+            <div key={column.title}>
+              <p className="text-sm font-semibold text-gray-900 dark:text-gray-200">
+                {column.title}
+              </p>
+              <ul className="mt-4 space-y-3">
+                {column.links.map((link) => (
+                  <li key={link.label}>
+                    {link.external ? (
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-gray-600 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+                      >
+                        {link.label}
+                      </a>
+                    ) : link.href === "#" ? (
+                      <span className="font-mono text-xs text-gray-500 dark:text-gray-400">
+                        {link.label}
+                      </span>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        className="text-sm text-gray-600 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+                      >
+                        {link.label}
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
       </div>
     </footer>
   );

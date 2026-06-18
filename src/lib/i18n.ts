@@ -30,7 +30,6 @@ export const UI: Record<
     tabSource: string;
     searchPlaceholder: string;
     upstreamRepo: string;
-    ctaAuthor: string;
     askAssistant: string;
     copyPage: string;
     onThisPage: string;
@@ -69,7 +68,6 @@ export const UI: Record<
     tabSource: "Source",
     searchPlaceholder: "Search...",
     upstreamRepo: "BuilderPulse Repo",
-    ctaAuthor: "Liu Xiaopai",
     askAssistant: "Ask assistant",
     copyPage: "Copy page",
     onThisPage: "On this page",
@@ -107,7 +105,6 @@ export const UI: Record<
     tabSource: "来源",
     searchPlaceholder: "搜索...",
     upstreamRepo: "上游仓库",
-    ctaAuthor: "刘小排",
     askAssistant: "询问助手",
     copyPage: "复制页面",
     onThisPage: "在此页面",
