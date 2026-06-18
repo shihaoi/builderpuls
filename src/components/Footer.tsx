@@ -87,7 +87,7 @@ export function Footer({ lang }: FooterProps) {
           </span>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3">
+        <div className="mx-auto mt-10 grid w-fit grid-cols-[repeat(2,minmax(7rem,max-content))] gap-x-14 gap-y-10 sm:grid-cols-[repeat(3,minmax(7rem,max-content))] sm:gap-x-24">
           {columns.map((column) => (
             <div key={column.title}>
               <p className="text-sm font-semibold text-gray-900 dark:text-gray-200">
