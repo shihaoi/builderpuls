@@ -38,7 +38,6 @@ export const UI: Record<
     footerReader: string;
     footerAuthor: string;
     footerMeta: string;
-    footerReaderRepo: string;
   }
 > = {
   en: {
@@ -78,7 +77,6 @@ export const UI: Record<
     footerReader: "Reader",
     footerAuthor: "Author",
     footerMeta: "Meta",
-    footerReaderRepo: "Reader site",
   },
   zh: {
     siteName: "BuilderPulse",
@@ -117,7 +115,6 @@ export const UI: Record<
     footerReader: "阅读",
     footerAuthor: "作者",
     footerMeta: "信息",
-    footerReaderRepo: "阅读站仓库",
   },
 };
 

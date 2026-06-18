@@ -57,21 +57,6 @@ export function Footer({ lang }: FooterProps) {
       ],
     },
     {
-      title: lang === "zh" ? "数据与 AI" : "Data & AI",
-      links: [
-        {
-          label: lang === "zh" ? "内容仓库" : "Content repo",
-          href: "https://github.com/BuilderPulse/BuilderPulse",
-          external: true,
-        },
-        {
-          label: lang === "zh" ? "阅读站仓库" : "Reader repo",
-          href: "https://github.com/shihaoi/builderpuls",
-          external: true,
-        },
-      ],
-    },
-    {
       title: lang === "zh" ? "法务" : "Legal",
       links: [
         {
@@ -111,7 +96,7 @@ export function Footer({ lang }: FooterProps) {
         </span>
       </div>
 
-      <div className="mt-10 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4">
+      <div className="mt-10 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3">
         {columns.map((column) => (
           <div key={column.title}>
             <p className="text-sm font-semibold text-gray-900 dark:text-gray-200">
