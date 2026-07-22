@@ -1,11 +1,11 @@
-import { Translate } from "@phosphor-icons/react/dist/ssr";
 import Image from "next/image";
 import Link from "next/link";
 import { SearchBox } from "@/components/SearchBox";
 import { getSearchEntries } from "@/lib/content";
 import type { Lang } from "@/lib/types";
-import { UI, otherLang } from "@/lib/i18n";
+import { UI } from "@/lib/i18n";
 import { ThemeToggle } from "./ThemeToggle";
+import { LanguageSelector } from "./LanguageSelector";
 
 export type HeaderTab =
   | "read"
@@ -35,8 +35,6 @@ export function Header({
   sectionLinks = [],
 }: HeaderProps) {
   const t = UI[lang];
-  const alt = otherLang(lang);
-  const altHref = alternateDate ? `/${alt}/${alternateDate}` : `/${alt}`;
   const searchEntries = getSearchEntries(lang);
 
   const tabs: {
@@ -91,14 +89,7 @@ export function Header({
 
           <nav className="flex shrink-0 items-center gap-1 sm:gap-2">
             <ThemeToggle />
-            <Link
-              href={altHref}
-              className="flex h-11 w-11 items-center justify-center rounded-xl text-gray-600 transition hover:bg-gray-600/5 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-200/5 dark:hover:text-gray-200 lg:hidden"
-              aria-label={t.langSwitch}
-              title={t.langSwitch}
-            >
-              <Translate size={18} />
-            </Link>
+            <LanguageSelector lang={lang} alternateDate={alternateDate} />
           </nav>
         </div>
 

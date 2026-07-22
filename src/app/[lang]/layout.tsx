@@ -3,11 +3,9 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { ClarityAnalytics, ThemeBootstrap } from "@/components/BrowserEffects";
 import type { Lang } from "@/lib/types";
-import { UI } from "@/lib/i18n";
+import { UI, ALL_LANGS } from "@/lib/i18n";
 import { pageMetadata, SITE_URL } from "@/lib/seo";
 import "../globals.css";
-
-const LANGS: Lang[] = ["en", "zh"];
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,7 +20,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export function generateStaticParams() {
-  return LANGS.map((lang) => ({ lang }));
+  return ALL_LANGS.map((lang) => ({ lang }));
 }
 
 export async function generateMetadata({
@@ -31,7 +29,7 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }): Promise<Metadata> {
   const { lang } = await params;
-  if (!LANGS.includes(lang as Lang)) return {};
+  if (!ALL_LANGS.includes(lang as Lang)) return {};
 
   const t = UI[lang as Lang];
   return {
@@ -63,7 +61,7 @@ export default async function LangLayout({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  if (!LANGS.includes(lang as Lang)) notFound();
+  if (!ALL_LANGS.includes(lang as Lang)) notFound();
 
   return (
     <html

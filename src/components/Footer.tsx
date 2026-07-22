@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Lang } from "@/lib/types";
-import { UI } from "@/lib/i18n";
+import { UI, ALL_LANGS, LANG_NAMES } from "@/lib/i18n";
 
 interface FooterProps {
   lang: Lang;
@@ -13,7 +13,7 @@ export function Footer({ lang }: FooterProps) {
 
   const columns = [
     {
-      title: lang === "zh" ? "探索" : "Explore",
+      title: t.footerExplore,
       links: [
         { label: t.tabRead, href: `/${lang}`, external: false },
         { label: t.tabArchive, href: `/${lang}/archive`, external: false },
@@ -27,7 +27,7 @@ export function Footer({ lang }: FooterProps) {
       ],
     },
     {
-      title: lang === "zh" ? "关于" : "About",
+      title: t.footerAbout,
       links: [
         {
           label: t.tabMethodology,
@@ -40,28 +40,23 @@ export function Footer({ lang }: FooterProps) {
           external: false,
         },
         {
-          label: lang === "zh" ? "关于本站" : "About BuilderPulse",
+          label: t.footerAboutSite,
           href: `/${lang}/about`,
           external: false,
         },
       ],
     },
     {
-      title: lang === "zh" ? "法务" : "Legal",
+      title: t.footerLegal,
       links: [
         {
-          label: lang === "zh" ? "隐私说明" : "Privacy Notice",
+          label: t.footerPrivacy,
           href: `/${lang}/privacy`,
           external: false,
         },
         {
-          label: lang === "zh" ? "用户协议" : "Terms of Use",
+          label: t.footerTerms,
           href: `/${lang}/terms`,
-          external: false,
-        },
-        {
-          label: lang === "zh" ? "English" : "简体中文",
-          href: lang === "zh" ? "/en" : "/zh",
           external: false,
         },
       ],
@@ -121,6 +116,25 @@ export function Footer({ lang }: FooterProps) {
                 ))}
               </ul>
             </div>
+          ))}
+        </div>
+
+        <div className="mt-10 flex flex-wrap items-center gap-3">
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            {t.langSwitch}:
+          </span>
+          {ALL_LANGS.map((l) => (
+            <Link
+              key={l}
+              href={`/${l}`}
+              className={`text-xs transition ${
+                l === lang
+                  ? "font-semibold text-gray-900 dark:text-gray-100"
+                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              }`}
+            >
+              {LANG_NAMES[l]}
+            </Link>
           ))}
         </div>
       </div>

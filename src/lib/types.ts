@@ -1,4 +1,15 @@
-export type Lang = "en" | "zh";
+export type Lang =
+  | "en"
+  | "zh"
+  | "es"
+  | "pt"
+  | "fr"
+  | "de"
+  | "ar"
+  | "ru"
+  | "it"
+  | "ja"
+  | "ko";
 
 export interface ReportMeta {
   sha: string;
