@@ -3,7 +3,7 @@ import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { MarkdownContent } from "@/components/MarkdownContent";
 import type { Lang, ReportSection } from "@/lib/types";
 
-const SECTION_NUMBERS: Record<Lang, string[]> = {
+const SECTION_NUMBERS = {
   zh: ["一", "二", "三", "四", "五", "六"],
   en: ["01", "02", "03", "04", "05", "06"],
 };
@@ -23,7 +23,7 @@ export function HomeBrief({
   dateLabel,
   readReportLabel,
 }: HomeBriefProps) {
-  const numbers = SECTION_NUMBERS[lang];
+  const numbers = SECTION_NUMBERS[lang === "zh" ? "zh" : "en"];
 
   return (
     <div className="mt-8 space-y-14">

@@ -5,6 +5,7 @@ import {
   getTopics,
   plainMarkdown,
 } from "./content";
+import { ALL_LANGS } from "./i18n";
 import type {
   BuildIdeaSummary,
   Lang,
@@ -12,7 +13,24 @@ import type {
   PersonaPage,
 } from "./types";
 
-export const PERSONAS: PersonaDefinition[] = [
+type BilingualPersonaDefinition = Omit<
+  PersonaDefinition,
+  | "label"
+  | "targetKeyword"
+  | "description"
+  | "directAnswer"
+  | "searchIntent"
+  | "useCases"
+> & {
+  label: Pick<PersonaDefinition["label"], "en" | "zh">;
+  targetKeyword: Pick<PersonaDefinition["targetKeyword"], "en" | "zh">;
+  description: Pick<PersonaDefinition["description"], "en" | "zh">;
+  directAnswer: Pick<PersonaDefinition["directAnswer"], "en" | "zh">;
+  searchIntent: Pick<PersonaDefinition["searchIntent"], "en" | "zh">;
+  useCases: Pick<PersonaDefinition["useCases"], "en" | "zh">;
+};
+
+const BILINGUAL_PERSONAS: BilingualPersonaDefinition[] = [
   {
     slug: "indie-hackers",
     label: { en: "Indie Hackers", zh: "独立开发者" },
@@ -218,6 +236,30 @@ export const PERSONAS: PersonaDefinition[] = [
     keywords: ["local", "offline", "privacy", "model", "on-device"],
   },
 ];
+
+function localizePersona(
+  persona: BilingualPersonaDefinition,
+): PersonaDefinition {
+  const sourceLang = (lang: Lang) => (lang === "zh" ? "zh" : "en");
+  const localize = <T>(values: { en: T; zh: T }): Record<Lang, T> =>
+    Object.fromEntries(
+      ALL_LANGS.map((lang) => [lang, values[sourceLang(lang)]]),
+    ) as Record<Lang, T>;
+
+  return {
+    ...persona,
+    label: localize(persona.label),
+    targetKeyword: localize(persona.targetKeyword),
+    description: localize(persona.description),
+    directAnswer: localize(persona.directAnswer),
+    searchIntent: localize(persona.searchIntent),
+    useCases: localize(persona.useCases),
+  };
+}
+
+export const PERSONAS: PersonaDefinition[] = BILINGUAL_PERSONAS.map(
+  localizePersona,
+);
 
 function ideaHaystack(idea: BuildIdeaSummary): string {
   return plainMarkdown(
